@@ -18,7 +18,6 @@ class ModelConsumer(private val dir: File) : Consumer<Model> {
 
     private fun yamlCoreModel(model: Model, dir: File) {
         model.toYaml().forEach { (content, file) ->
-            println(content)
             File(dir, file).writeText(content)
         }
     }

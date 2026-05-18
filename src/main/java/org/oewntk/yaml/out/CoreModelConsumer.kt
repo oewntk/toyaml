@@ -20,7 +20,6 @@ class CoreModelConsumer(private val dir: File) : Consumer<CoreModel> {
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         model.toYaml().forEach { (content, file) ->
-            println(content)
             File(dir, file).writeText(content)
         }
     }
