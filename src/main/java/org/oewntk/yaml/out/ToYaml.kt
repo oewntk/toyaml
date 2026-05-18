@@ -4,48 +4,99 @@ import org.oewntk.model.*
 import org.yaml.snakeyaml.Yaml
 import java.io.StringWriter
 
+/**
+ * Pronunciation to YAML
+ * Keys if map:
+ *  - value
+ *  - variety
+ */
+fun Pronunciation.toYaml(): Any {
+    return if (variety == null)
+        value
+    else
+        mapOf(
+            "value" to value,
+            "variety" to variety
+        )
+}
+
+/*
+ * Example 'Pair<text, source> to YAML
+ * @return Text string if source is null a Map otherwise
+ * Keys if a map
+    text
+    source
+*/
+
+/**
+ * Sense to YAML
+ * Keys:
+ * - id
+ * - synset
+ * - adjposition
+ * - subcat
+ * - sent
+ * - <relations>
+ */
+fun Sense.toYaml(): Map<String, Any> {
+    return mutableMapOf<String, Any>(
+        "id" to senseKey,
+        "synset" to synsetId,
+    ).apply {
+        adjPosition?.let { this["adjposition"] = it }
+        examples?.let { this["sent"] = it.map { it2 -> if (it2.second == null) it2.first else mapOf("text" to it2.first, "source" to it2.second) } }
+        verbFrames?.let { this["subcat"] = it }
+        relations?.forEach { (rel: String, target) ->
+            this[rel] = target.toList()
+        }
+    }
+}
+
+/**
+ * Synset to YAML
+ * Keys:
+ * - members
+ * - partOfSpeech
+ * - definition
+ * - example
+ * - usage
+ * - wikidata
+ * - ili
+ * - <relations>
+ */
+
+fun Synset.toYaml(): Map<String, Any> {
+    return mutableMapOf<String, Any>(
+        // "id" to synsetId,
+        "partOfSpeech" to partOfSpeech,
+        "definition" to definition!!,
+        "members" to members.toList(),
+        "source" to "${lexfile!!}.yaml",
+    ).apply {
+        examples?.let { this["example"] = it.map { it2 -> if (it2.second == null) it2.first else mapOf("text" to it2.first, "source" to it2.second) } }
+        usages?.let { this["usage"] = it }
+        relations?.forEach { (rel, target) ->
+            this[rel] = target.toList()
+        }
+        wikidata?.let { this["wikidata"] = it }
+        ili?.let { this["ili"] = it }
+    }
+}
+
+fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
+    return mutableMapOf<String, Any>(
+        // "key2" to key2,
+        "sense" to senseKeys.map { resolver.invoke(it)!! }.map(Sense::toYaml).toList(),
+    ).apply {
+        forms?.let { this["form"] = it.map { it2 -> it2 }.toList() }
+        pronunciations?.let { this["pronunciation"] = it.map(Pronunciation::toYaml).toList() }
+        source?.let { this["source"] = it }
+    }
+}
+
 fun CoreModel.toYaml(): String {
 
-    fun Pronunciation.toYaml(): Map<String, Any> {
-        return mutableMapOf<String, Any>(
-            "value" to value,
-        ).apply {
-            variety?.let { this["variety"] = it }
-        }
-    }
-
-    fun Sense.toYaml(): Map<String, Any> {
-        return mutableMapOf<String, Any>(
-            "id" to senseKey,
-            "synset" to synsetId,
-        ).apply {
-            relations?.forEach { (rel: String, target) ->
-                this[rel] = target.toList()
-            }
-        }
-    }
-
-    fun Lex.toYaml(): Map<String, Any> {
-        return mutableMapOf<String, Any>(
-            "key" to key2,
-            "sense" to senseKeys.map { sensesById!![it]!! }.map(Sense::toYaml).toList(),
-        ).apply {
-            forms?.let { this["form"] = it }
-            pronunciations?.let { this["pronunciation"] = it.map(Pronunciation::toYaml).toList() }
-            source?.let { this["source"] = it }
-        }
-    }
-
-    fun Synset.toYaml(): Map<String, Any> {
-        return mutableMapOf(
-            "id" to synsetId,
-            "members" to members.toList(),
-        ).apply {
-            relations?.forEach { (rel, target) ->
-                this[rel] = target.toList()
-            }
-        }
-    }
+    fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
 
     // RANGE
 
@@ -108,4 +159,3 @@ fun CoreModel.toYaml(): String {
     }
     return writer.toString()
 }
-
