@@ -4,7 +4,6 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.CoreModel
-import org.oewntk.model.DataCoreModel
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.IOException
@@ -14,27 +13,22 @@ import java.util.function.Consumer
 /**
  * Main class that serializes the core model.
  *
- * @property file output file
- * @param prettyPrintFlag pretty print output
+ * @property dir output dir
  * @author Bernard Bou
  */
-@Suppress("unused")
-class CoreModelConsumer(private val file: File, prettyPrintFlag: Boolean = false) : Consumer<CoreModel> {
+class CoreModelConsumer(private val dir: File) : Consumer<CoreModel> {
 
-    val writer = StringWriter()
-
-    val yaml = Yaml()
-
-    private fun yamlCoreModel(model: CoreModel, file: File) {
-        val yamlString = model.toYaml()
-        println(yamlString)
-        File(file, "test.yaml").writeText(yamlString)
-     }
+    private fun yamlCoreModel(model: CoreModel, dir: File) {
+        model.toYaml().forEach { (content, file) ->
+            println(content)
+            File(dir, file).writeText(content)
+        }
+    }
 
     override fun accept(model: CoreModel) {
         Tracing.psInfo.printf("[CoreModel] %s%n", model.source)
         try {
-            yamlCoreModel(model, file)
+            yamlCoreModel(model, dir)
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
         }

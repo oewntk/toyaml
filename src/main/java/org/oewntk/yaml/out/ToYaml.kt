@@ -160,36 +160,38 @@ fun CoreModel.toFlatYaml(): String {
     return writer.toString()
 }
 
-fun CoreModel.toYaml() {
+fun CoreModel.toYaml(): Sequence<Pair<String, String>> {
     fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
 
-    lexes
-        .groupBy { it.source }
-        .forEach { (source, lexes) ->
-            val whichEntries = lexes.groupBy { it.lemma }
-            val yEntries = mutableMapOf<String, Any>().apply {
-                whichEntries.forEach { (lemma, lexes) ->
-                    this[lemma] = lexes.associate { it.key2 to it.toYaml() }
+    return sequence {
+        lexes
+            .groupBy { it.source }
+            .forEach { (file, lexes) ->
+                val whichEntries = lexes.groupBy { it.lemma }
+                val yEntries = mutableMapOf<String, Any>().apply {
+                    whichEntries.forEach { (lemma, lexes) ->
+                        this[lemma] = lexes.associate { it.key2 to it.toYaml() }
+                    }
                 }
+                val writer = StringWriter()
+                Yaml().apply {
+                    dump(yEntries, writer)
+                }
+                val content = writer.toString()
+                yield(content to file!!) // write content to source.yaml
             }
-            val writer = StringWriter()
-            Yaml().apply {
-                dump(yEntries, writer)
-            }
-            val content = writer.toString()
-            // write content to source.yaml
-        }
 
-    synsets
-        .groupBy { it.domain }
-        .forEach { (domain, synsets) ->
-            val whichSynsets = synsets
-            val ySynsets = whichSynsets.associate { it.synsetId to it.toYaml() }
-            val writer = StringWriter()
-            Yaml().apply {
-                dump(ySynsets, writer)
+        synsets
+            .groupBy { it.lexfile }
+            .forEach { (lexfile, synsets) ->
+                val whichSynsets = synsets
+                val ySynsets = whichSynsets.associate { it.synsetId to it.toYaml() }
+                val writer = StringWriter()
+                Yaml().apply {
+                    dump(ySynsets, writer)
+                }
+                val content = writer.toString()
+                yield(content to "$lexfile.yaml") // write content to source.yaml
             }
-            val content = writer.toString()
-            // write content to domain.yaml
-        }
+    }
 }
