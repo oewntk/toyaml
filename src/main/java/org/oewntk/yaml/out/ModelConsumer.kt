@@ -18,6 +18,7 @@ class ModelConsumer(private val dir: File) : Consumer<Model> {
 
     private fun yamlCoreModel(model: Model, dir: File) {
         model.toYaml().forEach { (content, file) ->
+            Tracing.psInfo.printf("[File] %s%n", file)
             File(dir, file).writeText(content)
         }
     }
