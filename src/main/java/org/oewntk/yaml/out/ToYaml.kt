@@ -2,12 +2,12 @@ package org.oewntk.yaml.out
 
 import org.oewntk.model.*
 import org.yaml.snakeyaml.Yaml
-import java.io.StringWriter
 
 typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
 
 /**
  * Pronunciation to YAML
+ * @return string or map
  * Keys if result is map:
  *  - value
  *  - variety
@@ -24,14 +24,15 @@ fun Pronunciation.toYaml(): Any {
 
 /*
  * Example (Pair<text, source>) to YAML
- * @return Text string if source is null a Map otherwise
+ * @return text string if source is null a map otherwise
  * Keys if a map
     text
     source
 */
 
 /**
- * Sense to YAML
+ * Sense to YAML map
+ * @return map
  * Keys:
  * - id
  * - synset
@@ -55,7 +56,8 @@ fun Sense.toYaml(): Map<String, Any> {
 }
 
 /**
- * Synset to YAML
+ * Synset to YAML map
+ * @return map
  * Keys:
  * - members
  * - partOfSpeech
@@ -66,7 +68,6 @@ fun Sense.toYaml(): Map<String, Any> {
  * - ili
  * - <relations>
  */
-
 fun Synset.toYaml(): Map<String, Any> {
     return mutableMapOf<String, Any>(
         // "id" to synsetId,
@@ -85,6 +86,16 @@ fun Synset.toYaml(): Map<String, Any> {
     }
 }
 
+/**
+ * Lex to YAML map
+ * @param resolver senseKey to sense resolver
+ * @return map
+ * Keys:
+ * - form
+ * - pronunciation
+ * - sense
+ * - source
+ */
 fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
     return mutableMapOf<String, Any>(
         // "key2" to key2,
@@ -96,134 +107,100 @@ fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
     }
 }
 
-// val someSenses = arrayOf("force%1:07:00::", "force%1:07:01::", "force%1:19:00::")
-//    .map { sensesById!![it]!! }
-//    .toFlatYaml()
-
-fun Sequence<Sense>.toFlatYaml(): String {
-    val yaml = Yaml()
-    val ySenses = this
-        .map(Sense::toYaml)
-        .toList()
-    val writer = StringWriter()
-    yaml.apply {
-        dump(ySenses, writer)
+/**
+ * Entries to YAML map
+ * @param entries entries
+ * @param resolver senseKey to sense resolver
+ * @return map of YAML entries by lemma
+ */
+fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): Map<String, Any> {
+    return mutableMapOf<String, Any>().apply {
+        entries.forEach { (lemma, lexes) ->
+            this[lemma] = lexes.associate { it.key2 to it.toYaml(resolver) }
+        }
     }
-    return writer.toString()
 }
 
-// val ySomeLexes = arrayOf("force", "lead", "row", "bow", "galore")
-//     .flatMap { lexesByLemma!![it]!! }
-//     .toFlatYaml(){ sensesById!![it]!! }
-
-fun Sequence<Lex>.toFlatYaml(resolver: (SenseKey) -> Sense? ): String {
+/**
+ * Lexes to YAML map
+ * @param lexes lexes
+ * @param resolver senseKey to sense resolver
+ * @return list of YAML lexes
+ */
+fun lexesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): List<Any> {
     fun Lex.toYaml(): Map<String, Any> = toYaml { resolver.invoke(it)!! }
-
-    val yaml = Yaml()
-    val yLexes = this
+    return lexes
         .map(Lex::toYaml)
         .toList()
-    val writer = StringWriter()
-    yaml.dump(yLexes, writer)
-    return writer.toString()
 }
 
-// val ySomeSynsets = arrayOf("05042508-n", "05201846-n", "11479041-n")
-//     .map { synsetsById!![it]!! }
-//     .toFlatYaml()
-
-fun Sequence<Synset>.toFlatYaml2(): String {
-    val yaml = Yaml()
-    val ySynsets = this
-        .map(Synset::toYaml)
+/**
+ * Senses to YAML map
+ * @param senses senses
+ * @return list of YAML sense
+ */
+fun sensesToYaml(senses: Sequence<Sense>): List<Any> {
+    return senses
+        .map(Sense::toYaml)
         .toList()
-    val writer = StringWriter()
-    yaml.dump(ySynsets, writer)
-    return writer.toString()
 }
 
-fun Sequence<Synset>.toFlatYaml(): String {
-    val yaml = Yaml()
-    val ySynsets = associate { it.synsetId to it.toYaml() }
-    val writer = StringWriter()
-    yaml.dump(ySynsets, writer)
-    return writer.toString()
+/**
+ * Synsets to YAML map
+ * @param synsets
+ * @return map of YAML synset by id
+ */
+fun synsetsToYaml(synsets: Sequence<Synset>): Map<SynsetId, Any> {
+    return synsets.associate { it.synsetId to it.toYaml() }
 }
 
-// val whichEntriesRandomRange : Sequence<LexEntry> = lexesByLemma!!
-//     .asSequence()
-//     .drop(19000)
-//     .take(200)
-
-// val whichEntriesSome: Sequence<LexEntry> = arrayOf("force", "lead", "row", "bow", "galore")
-//     .asSequence()
-//     .map { AbstractMap.SimpleEntry(it , lexesByLemma!![it]!!) }
-
-fun Sequence<LexEntry>.toFlatYaml(resolver: (SenseKey) -> Sense? ): String {
-    val whichEntries = this
-    val yEntries = mutableMapOf<String, Any>().apply {
-        whichEntries.forEach { (lemma, lexes) ->
-            this[lemma] = lexes.associate { it.key2 to it.toYaml(resolver) }
-        }
-    }
-    val writer = StringWriter()
-    Yaml().apply {
-        dump(yEntries, writer)
-    }
-    return writer.toString()
+/**
+ * Flat generator
+ *
+ * @param whichEntries which entries to select, by default all
+ * @param whichSynsets which synsets, by default all
+ * @receiver core model
+ * @return content
+ */
+fun CoreModel.toFlatYaml(
+    whichEntries: Sequence<LexEntry> = lexesByLemma!!.asSequence(),
+    whichSynsets: Sequence<Synset> = synsets.asSequence()
+): String {
+    val yEntries = entriesToYaml(whichEntries) { sensesById!![it]!! }
+    val ySynsets = synsetsToYaml(whichSynsets)
+    return YamlDump().dump(yEntries, ySynsets)
 }
 
-private fun toFlatYaml(whichEntries: Sequence<LexEntry>, whichSynsets: Sequence<Synset>, resolver: (SenseKey) -> Sense? ): String {
-    val yEntries = mutableMapOf<String, Any>().apply {
-        whichEntries.forEach { (lemma, lexes) ->
-            this[lemma] = lexes.associate { it.key2 to it.toYaml(resolver) }
-        }
-    }
-    val ySynsets = whichSynsets.associate { it.synsetId to it.toYaml() }
-    val writer = StringWriter()
-    Yaml().apply {
-        dump(yEntries, writer)
-        dump(ySynsets, writer)
-    }
-    return writer.toString()
-}
-
-fun CoreModel.toFlatYaml(): String {
-    return toFlatYaml(lexesByLemma!!.asSequence(), synsets.asSequence()) { sensesById!![it]!! }
-}
-
-fun CoreModel.toYaml(): Sequence<Pair<String, String>> {
+/**
+ * Split generator
+ *
+ * @receiver core model
+ * @yield content to file
+ */
+fun CoreModel.toSplitYaml(): Sequence<Pair<String, String>> {
     fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
 
-    val yaml = Yaml()
+    val dumper = Yaml()
     return sequence {
         lexes
             .groupBy { it.source }
             .forEach { (file, lexes) ->
-                val whichEntries = lexes.groupBy { it.lemma }
                 val yEntries = mutableMapOf<String, Any>().apply {
-                    whichEntries.forEach { (lemma, lexes) ->
-                        this[lemma] = lexes.associate { it.key2 to it.toYaml() }
-                    }
+                    lexes
+                        .groupBy { it.lemma }
+                        .forEach { (lemma, lexes) ->
+                            this[lemma] = lexes.associate { it.key2 to it.toYaml() }
+                        }
                 }
-                val writer = StringWriter()
-                yaml.apply {
-                    dump(yEntries, writer)
-                }
-                val content = writer.toString()
+                val content = dumper.dump(yEntries)
                 yield(content to file!!) // write content to source.yaml
             }
 
         synsets
             .groupBy { it.lexfile }
             .forEach { (lexfile, synsets) ->
-                val whichSynsets = synsets
-                val ySynsets = whichSynsets.associate { it.synsetId to it.toYaml() }
-                val writer = StringWriter()
-                yaml.apply {
-                    dump(ySynsets, writer)
-                }
-                val content = writer.toString()
+                val ySynsets = synsets.associate { it.synsetId to it.toYaml() }
+                val content = dumper.dump(ySynsets)
                 yield(content to "$lexfile.yaml") // write content to source.yaml
             }
     }

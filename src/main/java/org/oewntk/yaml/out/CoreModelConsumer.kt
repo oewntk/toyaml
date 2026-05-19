@@ -4,10 +4,8 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.CoreModel
-import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.IOException
-import java.io.StringWriter
 import java.util.function.Consumer
 
 /**
@@ -19,7 +17,7 @@ import java.util.function.Consumer
 class CoreModelConsumer(private val dir: File) : Consumer<CoreModel> {
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
-        model.toYaml().forEach { (content, file) ->
+        model.toSplitYaml().forEach { (content, file) ->
             File(dir, file).writeText(content)
         }
     }
