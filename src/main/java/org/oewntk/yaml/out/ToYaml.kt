@@ -1,6 +1,7 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.*
+import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 
 typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
@@ -155,38 +156,42 @@ fun synsetsToYaml(synsets: Sequence<Synset>): Map<SynsetId, Any> {
 }
 
 /**
- * Flat generator
+ * Flat YAML producer
  *
  * @param whichEntries which entries to select, by default all
  * @param whichSynsets which synsets, by default all
+ * @param options dump options
  * @receiver core model
  * @return content
  */
 fun CoreModel.toFlatYaml(
-    whichEntries: Sequence<LexEntry> = lexesByLemma!!.asSequence(),
-    whichSynsets: Sequence<Synset> = synsets.asSequence()
+    whichEntries: Sequence<LexEntry> = lexesByLemma!!.asSequence().sortedBy { it.key },
+    whichSynsets: Sequence<Synset> = synsets.asSequence().sortedBy { it.synsetId },
+    options: DumperOptions = DumperOptions()
 ): String {
     val yEntries = entriesToYaml(whichEntries) { sensesById!![it]!! }
     val ySynsets = synsetsToYaml(whichSynsets)
-    return YamlDump().dump(yEntries, ySynsets)
+    return YamlDump(options).dump(yEntries, ySynsets)
 }
 
 /**
- * Split generator
+ * Split YAML generator
  *
+ * @param options dump options
  * @receiver core model
  * @yield content to file
  */
-fun CoreModel.toSplitYaml(): Sequence<Pair<String, String>> {
+fun CoreModel.toSplitYaml(options: DumperOptions = DumperOptions()): Sequence<Pair<String, String>> {
     fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
 
-    val dumper = Yaml()
+    val dumper = YamlDump(options)
     return sequence {
         lexes
             .groupBy { it.source }
             .forEach { (file, lexes) ->
                 val yEntries = mutableMapOf<String, Any>().apply {
                     lexes
+                        .sortedBy { it.lemma }
                         .groupBy { it.lemma }
                         .forEach { (lemma, lexes) ->
                             this[lemma] = lexes.associate { it.key2 to it.toYaml() }
@@ -197,6 +202,7 @@ fun CoreModel.toSplitYaml(): Sequence<Pair<String, String>> {
             }
 
         synsets
+            .sortedBy { it.synsetId }
             .groupBy { it.lexfile }
             .forEach { (lexfile, synsets) ->
                 val ySynsets = synsets.associate { it.synsetId to it.toYaml() }

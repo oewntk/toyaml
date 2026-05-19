@@ -4,6 +4,7 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.CoreModel
+import org.yaml.snakeyaml.DumperOptions
 import java.io.File
 import java.io.IOException
 import java.util.function.Consumer
@@ -14,11 +15,27 @@ import java.util.function.Consumer
  * @property dir output dir
  * @author Bernard Bou
  */
-class CoreModelConsumer(private val dir: File) : Consumer<CoreModel> {
+class CoreModelConsumer(private val dir: File, val split: Boolean = true) : Consumer<CoreModel> {
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
-        model.toSplitYaml().forEach { (content, file) ->
-            File(dir, file).writeText(content)
+        val options = DumperOptions().apply{
+            this.
+            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK // DumperOptions.FlowStyle.FLOW
+            defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
+            isPrettyFlow = true
+            width = 128
+            indent = 2
+        }
+        if (split) {
+            model.toSplitYaml(options = options).forEach { (content, file) ->
+                Tracing.psInfo.printf("[File] %s%n", file)
+                File(dir, file).writeText(content)
+            }
+        } else {
+            val file = File(dir, "oewn.yaml")
+            val content = model.toFlatYaml(options = options)
+            Tracing.psInfo.printf("[File] %s%n", file)
+            file.writeText(content)
         }
     }
 
