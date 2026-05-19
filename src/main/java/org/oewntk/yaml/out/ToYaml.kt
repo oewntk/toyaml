@@ -2,25 +2,21 @@ package org.oewntk.yaml.out
 
 import org.oewntk.model.*
 import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
 
 typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
 
 /**
  * Pronunciation to YAML
- * @return string or map
- * Keys if result is map:
+ * @return map
+ * Keys:
  *  - value
  *  - variety
  */
-fun Pronunciation.toYaml(): Any {
-    return if (variety == null)
-        value
-    else
-        mapOf(
-            "value" to value,
-            "variety" to variety
-        )
+fun Pronunciation.toYaml(): Map<String, Any> {
+    return mutableMapOf("value" to value)
+        .apply {
+            variety?.let { this["variety"] = it }
+        }
 }
 
 /*
@@ -73,7 +69,7 @@ fun Synset.toYaml(): Map<String, Any> {
     return mutableMapOf<String, Any>(
         // "id" to synsetId,
         "partOfSpeech" to partOfSpeech,
-        "definition" to definition!!,
+        "definition" to listOf(definition!!),
         "members" to members.toList(),
         "source" to "${lexfile!!}.yaml",
     ).apply {
