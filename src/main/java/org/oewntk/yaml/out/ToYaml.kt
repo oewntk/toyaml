@@ -1,6 +1,8 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.*
+import org.oewntk.model.InverseRelationFactory.INVERSE_SENSE_RELATIONS_SET
+import org.oewntk.model.InverseRelationFactory.INVERSE_SYNSET_RELATIONS_SET
 import org.yaml.snakeyaml.DumperOptions
 
 typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
@@ -46,10 +48,12 @@ fun Sense.toYaml(): Map<String, Any> {
         adjPosition?.let { this["adjposition"] = it }
         examples?.let { this["sent"] = it.map { it2 -> if (it2.second == null) it2.first else mapOf("text" to it2.first, "source" to it2.second) } }
         verbFrames?.let { this["subcat"] = it }
-        relations?.forEach { (rel: String, target) ->
-            this[rel] = target.toList()
-        }
-    }
+        relations
+            ?.filterNot { it.key in INVERSE_SENSE_RELATIONS_SET }
+            ?.forEach { (rel: String, target) ->
+                this[rel] = target.toList()
+            }
+    }.toSortedMap()
 }
 
 /**
@@ -75,10 +79,12 @@ fun Synset.toYaml(): Map<String, Any> {
     ).apply {
         examples?.let { this["example"] = it.map { it2 -> if (it2.second == null) it2.first else mapOf("text" to it2.first, "source" to it2.second) } }
         usages?.let { this["usage"] = it }
-        relations?.forEach { (rel, target) ->
-            this[rel] = target.toList()
-        }
-        wikidata?.let { this["wikidata"] = it }
+        relations
+            ?.filterNot { it.key in INVERSE_SYNSET_RELATIONS_SET }
+            ?.forEach { (rel, target) ->
+                this[rel] = target.toList()
+            }
+        wikidata?.let { if (it.isNotEmpty()) this["wikidata"] = if (it.size == 1) it[0] else it }
         ili?.let { this["ili"] = it }
     }
 }
