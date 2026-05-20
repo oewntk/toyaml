@@ -19,11 +19,10 @@ class CoreModelConsumer(private val dir: File, val split: Boolean = true) : Cons
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         val options = DumperOptions().apply{
-            this.
-            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK // DumperOptions.FlowStyle.FLOW
+            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK // DumperOptions.FlowStyle.FLOW, DumperOptions.FlowStyle.AUTO
             defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
             isPrettyFlow = true
-            width = 128
+            width = 80
             indent = 2
         }
         if (split) {
