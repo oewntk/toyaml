@@ -15,7 +15,8 @@ import java.util.function.Consumer
  * @property dir output dir
  * @author Bernard Bou
  */
-class CoreModelConsumer(private val dir: File, val split: Boolean = true) : Consumer<CoreModel> {
+class CoreModelConsumer(private val dir: File, val split: Boolean = true, val generated: Boolean = false
+) : Consumer<CoreModel> {
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         val options = DumperOptions().apply{
@@ -26,7 +27,7 @@ class CoreModelConsumer(private val dir: File, val split: Boolean = true) : Cons
             indent = 2
         }
         if (split) {
-            model.toSplitYaml(options = options).forEach { (content, file) ->
+            model.toSplitYaml(options = options, generated = generated).forEach { (content, file) ->
                 Tracing.psInfo.printf("[File] %s%n", file)
                 File(dir, file).writeText(content)
             }

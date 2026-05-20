@@ -7,6 +7,8 @@ import org.yaml.snakeyaml.DumperOptions
 
 typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
 
+const val INCLUDE_LEXFILE = false
+
 /**
  * Pronunciation to YAML
  * @return map
@@ -28,6 +30,27 @@ fun Pronunciation.toYaml(): Map<String, Any> {
     text
     source
 */
+
+/**
+ * Lex to YAML map
+ * @param resolver senseKey to sense resolver
+ * @return map
+ * Keys:
+ * - form
+ * - pronunciation
+ * - sense
+ * - source
+ */
+fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
+    return mutableMapOf<String, Any>(
+        "sense" to senseKeys.map { resolver.invoke(it)!! }.map(Sense::toYaml).toList(),
+        // "key2" to key2,
+    ).apply {
+        forms?.let { this["form"] = it.map { it2 -> it2 }.toList() }
+        pronunciations?.let { this["pronunciation"] = it.map(Pronunciation::toYaml).toList() }
+        if (INCLUDE_LEXFILE) lexfile.let { this["lexfile"] = it }
+    }.toSortedMap()
+}
 
 /**
  * Sense to YAML map
@@ -75,9 +98,8 @@ fun Synset.toYaml(): Map<String, Any> {
         "partOfSpeech" to partOfSpeech,
         "definition" to listOf(definition!!),
         "members" to members.toList(),
-        "source" to "${lexfile!!}.yaml",
     ).apply {
-        examples?.let { this["example"] = it.map { it2 -> if (it2.second == null) it2.first else mapOf("text" to it2.first, "source" to it2.second) } }
+        examples?.let { this["example"] = it.map { it2 -> if (it2.second == null) it2.first else mapOf("source" to it2.second, "text" to it2.first) } }
         usages?.let { this["usage"] = it }
         relations
             ?.filterNot { it.key in INVERSE_SYNSET_RELATIONS_SET }
@@ -86,28 +108,9 @@ fun Synset.toYaml(): Map<String, Any> {
             }
         wikidata?.let { if (it.isNotEmpty()) this["wikidata"] = if (it.size == 1) it[0] else it }
         ili?.let { this["ili"] = it }
-    }
-}
-
-/**
- * Lex to YAML map
- * @param resolver senseKey to sense resolver
- * @return map
- * Keys:
- * - form
- * - pronunciation
- * - sense
- * - source
- */
-fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
-    return mutableMapOf<String, Any>(
-        // "key2" to key2,
-        "sense" to senseKeys.map { resolver.invoke(it)!! }.map(Sense::toYaml).toList(),
-    ).apply {
-        forms?.let { this["form"] = it.map { it2 -> it2 }.toList() }
-        pronunciations?.let { this["pronunciation"] = it.map(Pronunciation::toYaml).toList() }
         source?.let { this["source"] = it }
-    }
+        if (INCLUDE_LEXFILE) this["lexfile"] = "${lexfile!!}.yaml"
+    }.toSortedMap()
 }
 
 /**
@@ -183,13 +186,17 @@ fun CoreModel.toFlatYaml(
  * @receiver core model
  * @yield content to file
  */
-fun CoreModel.toSplitYaml(options: DumperOptions = DumperOptions()): Sequence<Pair<String, String>> {
+fun CoreModel.toSplitYaml(options: DumperOptions = DumperOptions(), generated: Boolean = false): Sequence<Pair<String, String>> {
     fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
 
     val dumper = YamlDump(options)
     return sequence {
         lexes
-            .groupBy { it.source }
+            .groupBy {
+                if (generated) {
+                    if (it.generated) "entries-generated.yaml" else it.lexfile
+                } else it.lexfile
+            }
             .forEach { (file, lexes) ->
                 val yEntries = mutableMapOf<String, Any>().apply {
                     lexes
@@ -200,7 +207,7 @@ fun CoreModel.toSplitYaml(options: DumperOptions = DumperOptions()): Sequence<Pa
                         }
                 }
                 val content = dumper.dump(yEntries)
-                yield(content to file!!) // write content to source.yaml
+                yield(content to file) // write content to source.yaml
             }
 
         synsets
