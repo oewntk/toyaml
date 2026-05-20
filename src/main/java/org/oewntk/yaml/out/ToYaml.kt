@@ -161,24 +161,6 @@ fun synsetsToYaml(synsets: Sequence<Synset>): Map<SynsetId, Any> {
 }
 
 /**
- * VerbFrames to YAML map
- * @param verbFrames sequence of verb frames
- * @return map of YAML verb frames by id
- */
-fun verbFramesToYaml(verbFrames: Sequence<VerbFrame>): Map<VerbFrameId, Any> {
-    return verbFrames.associate { it.id to it.frame }
-}
-
-/**
- * VerbTemplates to YAML map
- * @param verbTemplates sequence of verb templates
- * @return map of YAML verb templates by id
- */
-fun verbTemplatesToYaml(verbTemplates: Sequence<VerbTemplate>): Map<VerbTemplateId, Any> {
-    return verbTemplates.associate { it.id to it.template }
-}
-
-/**
  * Flat YAML producer
  *
  * @param whichEntries which entries to select, by default all
