@@ -3,6 +3,7 @@ package org.oewntk.yaml.out
 import org.oewntk.model.*
 import org.oewntk.model.InverseRelationFactory.INVERSE_SENSE_RELATIONS_SET
 import org.oewntk.model.InverseRelationFactory.INVERSE_SYNSET_RELATIONS_SET
+import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
 
 typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
@@ -172,7 +173,7 @@ fun synsetsToYaml(synsets: Sequence<Synset>): Map<SynsetId, Any> {
 fun CoreModel.toFlatYaml(
     whichEntries: Sequence<LexEntry> = lexesByLemma!!.asSequence().sortedBy { it.key },
     whichSynsets: Sequence<Synset> = synsets.asSequence().sortedBy { it.synsetId },
-    options: DumperOptions = DumperOptions()
+    options: DumperOptions = compatDumperOptions
 ): String {
     val yEntries = entriesToYaml(whichEntries) { sensesById!![it]!! }
     val ySynsets = synsetsToYaml(whichSynsets)
@@ -186,7 +187,7 @@ fun CoreModel.toFlatYaml(
  * @receiver core model
  * @yield content to file
  */
-fun CoreModel.toSplitYaml(options: DumperOptions = DumperOptions(), generated: Boolean = false): Sequence<Pair<String, String>> {
+fun CoreModel.toSplitYaml(options: DumperOptions = compatDumperOptions, generated: Boolean = false): Sequence<Pair<String, String>> {
     fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
 
     val dumper = YamlDump(options)

@@ -4,6 +4,7 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.Model
+import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
 import java.io.File
 import java.io.IOException
@@ -16,26 +17,21 @@ import java.util.function.Consumer
  * @author Bernard Bou
  */
 class ModelConsumer(
-    private val dir: File, val split: Boolean = true, val generated: Boolean = false
+    private val dir: File,
+    val split: Boolean = true,
+    val generated: Boolean = false,
+    val dumperOptions: DumperOptions = compatDumperOptions
 ) : Consumer<Model> {
 
     private fun yamlModel(model: Model, dir: File) {
-        val options = DumperOptions().apply {
-            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK // DumperOptions.FlowStyle.FLOW, DumperOptions.FlowStyle.AUTO
-            defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
-            isPrettyFlow = true
-            width = 80
-            indent = 2
-        }
-
         val frameMap = model.verbFrames.associate { it.id to it.frame }
-        val frameContent = YamlDump(options).dump(frameMap)
+        val frameContent = YamlDump(dumperOptions).dump(frameMap)
         val frameFile = File(dir, "frames.yaml")
         Tracing.psInfo.printf("[File] %s%n", frameFile)
         frameFile.writeText(frameContent)
 
         val templateMap = model.verbTemplates.associate { it.id to it.template }
-        val templateContent = YamlDump(options).dump(templateMap)
+        val templateContent = YamlDump(dumperOptions).dump(templateMap)
         val templateFile = File(dir, "templates.yaml")
         Tracing.psInfo.printf("[File] %s%n", templateFile)
         templateFile.writeText(templateContent)
