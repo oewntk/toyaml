@@ -41,7 +41,7 @@ fun Pronunciation.toYaml(): Map<String, Any> {
  * - sense
  * - source
  */
-fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
+fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<Key2, Any> {
     return mutableMapOf<String, Any>(
         "sense" to senseKeys.map { resolver.invoke(it)!! }.map(Sense::toYaml).toList(),
         // "key2" to key2,
@@ -63,7 +63,7 @@ fun Lex.toYaml(resolver: (SenseKey) -> Sense?): Map<String, Any> {
  * - sent
  * - <relations>
  */
-fun Sense.toYaml(): Map<String, Any> {
+fun Sense.toYaml(): Map<SenseKey, Any> {
     return mutableMapOf<String, Any>(
         "id" to senseKey,
         "synset" to synsetId,
@@ -92,7 +92,7 @@ fun Sense.toYaml(): Map<String, Any> {
  * - ili
  * - <relations>
  */
-fun Synset.toYaml(): Map<String, Any> {
+fun Synset.toYaml(): Map<SynsetId, Any> {
     return mutableMapOf<String, Any>(
         // "id" to synsetId,
         "partOfSpeech" to partOfSpeech,
@@ -115,7 +115,7 @@ fun Synset.toYaml(): Map<String, Any> {
 
 /**
  * Entries to YAML map
- * @param entries entries
+ * @param entries entries sequence of entries
  * @param resolver senseKey to sense resolver
  * @return map of YAML entries by lemma
  */
@@ -129,7 +129,7 @@ fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): 
 
 /**
  * Lexes to YAML map
- * @param lexes lexes
+ * @param lexes lexes sequence of lexes
  * @param resolver senseKey to sense resolver
  * @return list of YAML lexes
  */
@@ -142,7 +142,7 @@ fun lexesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): List<Any>
 
 /**
  * Senses to YAML map
- * @param senses senses
+ * @param senses senses sequence of senses
  * @return list of YAML sense
  */
 fun sensesToYaml(senses: Sequence<Sense>): List<Any> {
@@ -153,11 +153,29 @@ fun sensesToYaml(senses: Sequence<Sense>): List<Any> {
 
 /**
  * Synsets to YAML map
- * @param synsets
+ * @param synsets sequence of synsets
  * @return map of YAML synset by id
  */
 fun synsetsToYaml(synsets: Sequence<Synset>): Map<SynsetId, Any> {
     return synsets.associate { it.synsetId to it.toYaml() }
+}
+
+/**
+ * VerbFrames to YAML map
+ * @param verbFrames sequence of verb frames
+ * @return map of YAML verb frames by id
+ */
+fun verbFramesToYaml(verbFrames: Sequence<VerbFrame>): Map<VerbFrameId, Any> {
+    return verbFrames.associate { it.id to it.frame }
+}
+
+/**
+ * VerbTemplates to YAML map
+ * @param verbTemplates sequence of verb templates
+ * @return map of YAML verb templates by id
+ */
+fun verbTemplatesToYaml(verbTemplates: Sequence<VerbTemplate>): Map<VerbTemplateId, Any> {
+    return verbTemplates.associate { it.id to it.template }
 }
 
 /**
