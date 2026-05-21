@@ -57,7 +57,7 @@ class TestYamlObjects {
     @Test
     fun testSenses() {
         val someSenses = arrayOf("force%1:07:00::", "force%1:07:01::", "force%1:19:00::")
-            .map { model.senseResolver(it) }
+            .map(model.senseResolver)
             .asSequence()
         val yamlString = dumper.dump(sensesToYaml(someSenses))
         println(yamlString)
@@ -66,7 +66,7 @@ class TestYamlObjects {
     @Test
     fun testSynsets() {
         val someSynsets = arrayOf("05042508-n", "05201846-n", "11479041-n")
-            .map { model.synsetsById!![it]!! }
+            .map(model.synsetResolver)
             .asSequence()
         val yamlString = dumper.dump(synsetsToYaml(someSynsets))
         println(yamlString)
@@ -75,7 +75,7 @@ class TestYamlObjects {
     @Test
     fun testSomeLexes() {
         val someLexes = arrayOf("force", "lead", "row", "bow", "galore")
-            .flatMap { model.lexResolver(it) }
+            .flatMap(model.lexResolver)
             .asSequence()
         val yamlString = dumper.dump(lexesToYaml(someLexes, model.senseResolver))
         println(yamlString)
