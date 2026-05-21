@@ -175,7 +175,7 @@ fun CoreModel.toFlatYaml(
     whichSynsets: Sequence<Synset> = synsets.asSequence().sortedBy { it.synsetId },
     options: DumperOptions = compatDumperOptions
 ): String {
-    val yEntries = entriesToYaml(whichEntries) { sensesById!![it]!! }
+    val yEntries = entriesToYaml(whichEntries, senseResolver)
     val ySynsets = synsetsToYaml(whichSynsets)
     return YamlDump(options).dump(yEntries, ySynsets)
 }
@@ -188,7 +188,7 @@ fun CoreModel.toFlatYaml(
  * @yield content to file
  */
 fun CoreModel.toSplitYaml(options: DumperOptions = compatDumperOptions, generated: Boolean = false): Sequence<Pair<String, String>> {
-    fun Lex.toYaml(): Map<String, Any> = toYaml { sensesById!![it]!! }
+    fun Lex.toYaml(): Map<String, Any> = toYaml(senseResolver)
 
     val dumper = YamlDump(options)
     return sequence {
