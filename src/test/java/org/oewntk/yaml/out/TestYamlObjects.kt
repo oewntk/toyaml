@@ -5,10 +5,7 @@ package org.oewntk.yaml.out
 
 import org.junit.BeforeClass
 import org.junit.Test
-import org.oewntk.model.CoreModel
-import org.oewntk.model.Lex
-import org.oewntk.model.ModelInfo
-import org.oewntk.model.Synset
+import org.oewntk.model.*
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.ser.`in`.LibTestsSerCommon.ps
 import org.oewntk.yaml.out.YamlDump.Companion.autoDumperOptions
@@ -93,8 +90,7 @@ class TestYamlObjects {
 
     @Test
     fun test100RandomEntries() {
-        val someEntries: Sequence<LexEntry> = model.lexesByLemma!!
-            .asSequence()
+        val someEntries: Sequence<LexEntry> = model.lexEntries
             .drop((1000..100000).random())
             .take(100)
         val yamlString = dumper.dump(entriesToYaml(someEntries, model.senseResolver))

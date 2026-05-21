@@ -6,8 +6,6 @@ import org.oewntk.model.InverseRelationFactory.INVERSE_SYNSET_RELATIONS_SET
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
 
-typealias LexEntry = Map.Entry<Lemma, Collection<Lex>>
-
 const val INCLUDE_LEXFILE = false
 
 /**
@@ -171,7 +169,7 @@ fun synsetsToYaml(synsets: Sequence<Synset>): Map<SynsetId, Any> {
  * @return content
  */
 fun CoreModel.toFlatYaml(
-    whichEntries: Sequence<LexEntry> = lexesByLemma!!.asSequence().sortedBy { it.key },
+    whichEntries: Sequence<LexEntry> = lexEntries.sortedBy { it.key },
     whichSynsets: Sequence<Synset> = synsets.asSequence().sortedBy { it.synsetId },
     options: DumperOptions = compatDumperOptions
 ): String {
