@@ -35,7 +35,7 @@ class TestYamlObjects {
     fun testDummySynset() {
         val synset = Synset(
             "77777777-n",
-            'n',
+            SynsetType.N,
             "domain",
             arrayOf("member1", "member2"),
             arrayOf("definition", "definition2"),
