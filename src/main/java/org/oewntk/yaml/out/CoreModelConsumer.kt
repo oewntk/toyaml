@@ -13,11 +13,11 @@ import java.util.function.Consumer
 /**
  * Main class that serializes the core model.
  *
- * @property dir output dir
+ * @property outDir output dir
  * @author Bernard Bou
  */
 class CoreModelConsumer(
-    private val dir: File,
+    private val outDir: File,
     val split: Boolean = true,
     val generated: Boolean = false,
     val dumperOptions: DumperOptions = compatDumperOptions
@@ -39,8 +39,11 @@ class CoreModelConsumer(
 
     override fun accept(model: CoreModel) {
         Tracing.psInfo.printf("[CoreModel] %s%n", model.source)
+        if (!outDir.exists()) {
+            outDir.mkdirs()
+        }
         try {
-            yamlCoreModel(model, dir)
+            yamlCoreModel(model, outDir)
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
         }
