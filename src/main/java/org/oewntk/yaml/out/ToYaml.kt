@@ -94,7 +94,7 @@ fun Sense.toYaml(): Map<SenseKey, Any> {
 fun Synset.toYaml(): Map<SynsetId, Any> {
     return mutableMapOf<String, Any>(
         // "id" to synsetId,
-        "partOfSpeech" to partOfSpeech,
+        "partOfSpeech" to partOfSpeech.value,
         "definition" to listOf(definition!!),
         "members" to members.toList(),
     ).apply {
