@@ -26,13 +26,7 @@ class YamlDump(val options: DumperOptions = compatDumperOptions) {
 
     companion object {
         val defaultDumperOptions = DumperOptions()
-        val compatDumperOptions = DumperOptions().apply {
-            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-            defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
-            isPrettyFlow = true
-            width = 80
-            indent = 2
-        }
+
         val autoDumperOptions = DumperOptions().apply {
             defaultFlowStyle = DumperOptions.FlowStyle.AUTO
             defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
@@ -40,12 +34,25 @@ class YamlDump(val options: DumperOptions = compatDumperOptions) {
             width = 80
             indent = 2
         }
-        val flawDumperOptions = DumperOptions().apply {
+
+        val blockDumperOptions = DumperOptions().apply {
+            defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+            defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
+            isPrettyFlow = true
+            width = 80
+            indent = 2
+        }
+
+        val flowDumperOptions = DumperOptions().apply {
             defaultFlowStyle = DumperOptions.FlowStyle.FLOW
             defaultScalarStyle = DumperOptions.ScalarStyle.PLAIN // DumperOptions.ScalarStyle.SINGLE_QUOTED, DumperOptions.ScalarStyle.DOUBLE_QUOTED
             isPrettyFlow = true
             width = 80
             indent = 2
         }
+
+        val jsonDumperOptions = blockDumperOptions
+
+        val compatDumperOptions = blockDumperOptions
     }
 }
