@@ -51,8 +51,19 @@ class YamlDump(val options: DumperOptions = compatDumperOptions) {
             indent = 2
         }
 
-        val jsonDumperOptions = blockDumperOptions
-
+        /**
+         * Everything Might Get Quoted:
+         * Because we force ScalarStyle.DOUBLE_QUOTED, numbers and booleans will often end up wrapped in quotes (e.g., "30" instead of 30),
+         * depending on the exact version of SnakeYAML and how the data types are passed.
+         * This technically violates strict JSON types, though many JSON parsers will handle it.
+         */
+        val jsonDumperOptions = DumperOptions().apply {
+            defaultFlowStyle = DumperOptions.FlowStyle.FLOW
+            defaultScalarStyle = DumperOptions.ScalarStyle.DOUBLE_QUOTED
+            isPrettyFlow = true // Makes it readable rather than a single lineblockDumperOptions
+            width = 80
+            indent = 2
+        }
         val compatDumperOptions = blockDumperOptions
     }
 }
