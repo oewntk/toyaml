@@ -23,15 +23,18 @@ class CoreModelConsumer(
     val dumperOptions: DumperOptions = compatDumperOptions
 ) : Consumer<CoreModel> {
 
+    val yaml = ToYaml(dumperOptions)
+
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         if (split) {
-            model.toSplitYaml(options = dumperOptions, generated = generated).forEach { (content, file) ->
+            yaml.toSplitYaml(model, generated = generated).forEach { (content, file) ->
                 Tracing.psInfo.printf("[File] %s%n", file)
                 File(dir, file).writeText(content)
             }
         } else {
             val file = File(dir, "oewn.yaml")
-            val content = model.toFlatYaml(options = dumperOptions)
+
+            val content = yaml.toFlatYaml(model)
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(content)
         }

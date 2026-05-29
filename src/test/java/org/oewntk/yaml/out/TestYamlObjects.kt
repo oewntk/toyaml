@@ -8,26 +8,26 @@ import org.junit.Test
 import org.oewntk.model.*
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.ser.`in`.LibTestsSerCommon.ps
-import org.oewntk.yaml.out.YamlDump.Companion.autoDumperOptions
+import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import java.io.File
 import java.util.*
 import kotlin.test.assertEquals
 
 class TestYamlObjects {
 
-    val dumper = YamlDump(options = autoDumperOptions)
+    val yaml = ToYaml(options = compatDumperOptions)
 
     @Test
     fun testDummyEmptyLex() {
         val lex = Lex("jest", "n").apply { senseKeys = mutableListOf() }
-        val yamlString = dumper.dump(lex.toYaml(model.senseResolver))
+        val yamlString = yaml.toYaml(lex, model.senseResolver)
         println(yamlString)
     }
 
     @Test
     fun testDummyLex() {
         val lex = Lex("jest", "n", listOf("jest%1:10:00::", "jest%1:04:00::"))
-        val yamlString = dumper.dump(lex.toYaml(model.senseResolver))
+        val yamlString = yaml.toYaml(lex, model.senseResolver)
         println(yamlString)
     }
 
@@ -40,14 +40,14 @@ class TestYamlObjects {
             arrayOf("member1", "member2"),
             arrayOf("definition", "definition2"),
         )
-        val yamlString = dumper.dump(synset.toYaml())
+        val yamlString = yaml.toYaml(synset)
         println(yamlString)
     }
 
     @Test
     fun testSense() {
         val sense = model.senseResolver("jest%1:10:00::")
-        val yamlString = dumper.dump(sense.toYaml())
+        val yamlString = yaml.toYaml(sense)
         println(yamlString)
     }
 
@@ -56,7 +56,7 @@ class TestYamlObjects {
         val someSenses = arrayOf("force%1:07:00::", "force%1:07:01::", "force%1:19:00::")
             .map(model.senseResolver)
             .asSequence()
-        val yamlString = dumper.dump(sensesToYaml(someSenses))
+        val yamlString = yaml.sensesToYaml(someSenses)
         println(yamlString)
     }
 
@@ -65,7 +65,7 @@ class TestYamlObjects {
         val someSynsets = arrayOf("05042508-n", "05201846-n", "11479041-n")
             .map(model.synsetResolver)
             .asSequence()
-        val yamlString = dumper.dump(synsetsToYaml(someSynsets))
+        val yamlString = yaml.synsetsToYaml(someSynsets)
         println(yamlString)
     }
 
@@ -74,7 +74,7 @@ class TestYamlObjects {
         val someLexes = arrayOf("force", "lead", "row", "bow", "galore")
             .flatMap(model.lexResolver)
             .asSequence()
-        val yamlString = dumper.dump(lexesToYaml(someLexes, model.senseResolver))
+        val yamlString = yaml.lexValuesToYaml(someLexes, model.senseResolver)
         println(yamlString)
     }
 
@@ -84,7 +84,7 @@ class TestYamlObjects {
             .asSequence()
             .map { it to model.lexResolver(it) }
             .map { AbstractMap.SimpleEntry(it.first, it.second) }
-        val yamlString = dumper.dump(entriesToYaml(someEntries, model.senseResolver))
+        val yamlString = yaml.entriesToYaml(someEntries, model.senseResolver)
         println(yamlString)
     }
 
@@ -93,7 +93,7 @@ class TestYamlObjects {
         val someEntries: Sequence<LexEntry> = model.lexEntries
             .drop((1000..100000).random())
             .take(100)
-        val yamlString = dumper.dump(entriesToYaml(someEntries, model.senseResolver))
+        val yamlString = yaml.entriesToYaml(someEntries, model.senseResolver)
         println(yamlString)
     }
 
@@ -102,7 +102,7 @@ class TestYamlObjects {
         val someEntries: Sequence<LexEntry> = arrayOf("force", "lead", "row", "bow", "galore")
             .asSequence()
             .map { AbstractMap.SimpleEntry(it, model.lexResolver(it)) }
-        val yamlString = dumper.dump(entriesToYaml(someEntries, model.senseResolver))
+        val yamlString = yaml.entriesToYaml(someEntries, model.senseResolver)
         println(yamlString)
     }
 
