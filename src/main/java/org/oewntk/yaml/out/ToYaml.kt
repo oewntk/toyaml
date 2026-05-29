@@ -1,12 +1,14 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.*
+import org.oewntk.yaml.out.YamlDump.Companion.blockDumperOptions
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
+import kotlin.sequences.sortedWith
 
 const val INCLUDE_LEXFILE = false
 
-class ToYaml(options: DumperOptions = compatDumperOptions) {
+class ToYaml(options: DumperOptions = blockDumperOptions) {
 
     val dumper = YamlDump(options)
 
@@ -89,18 +91,18 @@ class ToYaml(options: DumperOptions = compatDumperOptions) {
     /**
      * Flat YAML producer
      *
-     * @param whichEntries which entries to select, by default all
+     * @param whichLexes which lexes to select, by default all
      * @param whichSynsets which synsets, by default all
      * @receiver core model
      * @return YAML string
      */
     fun toFlatYaml(
         model: CoreModel,
-        whichEntries: Sequence<LexEntry> = model.lexEntries.sortedBy { it.key },
+        whichLexes: Sequence<Lex> = model.lexes.asSequence().sortedWith(compareBy(Lex::lemma).thenBy(Lex::key2)),
         whichSynsets: Sequence<Synset> = model.synsets.asSequence().sortedBy { it.synsetId },
     ): String {
-        val (yEntries, ySynsets) = model.toFlatSerializable(whichEntries = whichEntries, whichSynsets = whichSynsets)
-        return dumper.dump(yEntries, ySynsets)
+        val (yEntries, ySynsets) = model.toFlatSerializable(whichLexes = whichLexes, whichSynsets = whichSynsets)
+        return dumper.dump(yEntries + ySynsets)
     }
 
     /**
