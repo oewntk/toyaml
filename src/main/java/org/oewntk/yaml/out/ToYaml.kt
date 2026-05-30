@@ -2,11 +2,7 @@ package org.oewntk.yaml.out
 
 import org.oewntk.model.*
 import org.oewntk.yaml.out.YamlDump.Companion.blockDumperOptions
-import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
-import kotlin.sequences.sortedWith
-
-const val INCLUDE_LEXFILE = false
 
 class ToYaml(options: DumperOptions = blockDumperOptions) {
 
@@ -52,7 +48,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param resolver senseKey to sense resolver
      * @return YAML string
      */
-    fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): String = dumper.dump(entriesToSerializable(entries, resolver))
+    fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): String = dumper.dump(entries.toSerializable(resolver))
 
     /**
      * Lexes to YAML string
@@ -61,7 +57,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param resolver senseKey to sense resolver
      * @return YAML string
      */
-    fun lexValuesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): String = dumper.dump(lexesAsValuesToSerializable(lexes, resolver))
+    fun lexValuesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): String = dumper.dump(lexes.asValuesToSerializable(resolver))
 
     /**
      * Lexes to YAML string
@@ -69,7 +65,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param lexes lexes sequence of lexes
      * @return YAML string
      */
-    fun lexesToYaml(lexes: Sequence<Lex>): String = dumper.dump(lexesAsEntriesToSerializable(lexes))
+    fun lexesToYaml(lexes: Sequence<Lex>): String = dumper.dump(lexes.asEntriesToSerializable())
 
     /**
      * Senses to YAML string
@@ -77,14 +73,14 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param senses senses sequence of senses
      * @return YAML string
      */
-    fun sensesToYaml(senses: Sequence<Sense>): String = dumper.dump(sensesToSerializableList(senses))
+    fun sensesToYaml(senses: Sequence<Sense>): String = dumper.dump(senses.toSerializable())
 
     /**
      * Synsets to YAML string
      * @param synsets sequence of synsets
      * @return YAML string
      */
-    fun synsetsToYaml(synsets: Sequence<Synset>): String = dumper.dump(synsetsToSerializable(synsets))
+    fun synsetsToYaml(synsets: Sequence<Synset>): String = dumper.dump(synsets.toSerializable())
 
     // M O D E L
 
