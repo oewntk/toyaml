@@ -77,7 +77,7 @@ class TestYamlOutput {
         println(yamlString)
     }
 
-    fun genSenses(i: Int, j: Int, n: Int = 3) = Array(n) {
+    private fun genSenses(i: Int, j: Int, n: Int = 3) = Array(n) {
         mapOf(
             "id" to "sk-$i-$j-$it",
             "synset" to "sy-$i-$j-$it",
@@ -86,14 +86,14 @@ class TestYamlOutput {
         )
     }.toList()
 
-    fun genLexes(i: Int, n: Int = 3) = Array(n) { j ->
+    private fun genLexes(i: Int, n: Int = 3) = Array(n) { j ->
         mapOf(
             "pronunciation" to "a:ha:",
             "sense" to genSenses(i, j, n = 3)
         )
     }
 
-    fun genEntries() = (1 until 5).associate { i ->
+    private fun genEntries() = (1 until 5).associate { i ->
         "lemma-$i" to mapOf(
             "pos-1" to genLexes(i),
             "pos-2" to genLexes(i + 1, n = 1),
