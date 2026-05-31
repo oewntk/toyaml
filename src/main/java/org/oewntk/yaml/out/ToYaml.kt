@@ -14,7 +14,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param pronunciation pronunciation
      * @return YAML string
      */
-    fun toYaml(pronunciation: Pronunciation): String = dumper.dump(pronunciation.toSerializable())
+    fun toYaml(pronunciation: Pronunciation): String = dump(pronunciation.toSerializable())
 
     /**
      * Lex to YAML string
@@ -23,7 +23,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param resolver senseKey to sense resolver
      * @return YAML string
      */
-    fun toYaml(lex: Lex, resolver: (SenseKey) -> Sense?): String = dumper.dump(lex.toSerializable(resolver))
+    fun toYaml(lex: Lex, resolver: (SenseKey) -> Sense?): String = dump(lex.toSerializable(resolver))
 
     /**
      * Sense to YAML string
@@ -31,7 +31,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param sense sense
      * @return YAML string
      */
-    fun toYaml(sense: Sense): String = dumper.dump(sense.toSerializable())
+    fun toYaml(sense: Sense): String = dump(sense.toSerializable())
 
     /**
      * Synset to YAML string
@@ -39,7 +39,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param synset synset
      * @return YAML string
      */
-    fun toYaml(synset: Synset): String = dumper.dump(synset.toSerializable())
+    fun toYaml(synset: Synset): String = dump(synset.toSerializable())
 
     /**
      * Entries to YAML string
@@ -48,7 +48,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param resolver senseKey to sense resolver
      * @return YAML string
      */
-    fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): String = dumper.dump(entries.toSerializable(resolver))
+    fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): String = dump(entries.toSerializable(resolver))
 
     /**
      * Lexes to YAML string
@@ -57,7 +57,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param resolver senseKey to sense resolver
      * @return YAML string
      */
-    fun lexValuesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): String = dumper.dump(lexes.asValuesToSerializable(resolver))
+    fun lexValuesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): String = dump(lexes.asValuesToSerializable(resolver))
 
     /**
      * Lexes to YAML string
@@ -65,7 +65,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param lexes lexes sequence of lexes
      * @return YAML string
      */
-    fun lexesToYaml(lexes: Sequence<Lex>): String = dumper.dump(lexes.asEntriesToSerializable())
+    fun lexesToYaml(lexes: Sequence<Lex>): String = dump(lexes.asEntriesToSerializable())
 
     /**
      * Senses to YAML string
@@ -73,14 +73,14 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param senses senses sequence of senses
      * @return YAML string
      */
-    fun sensesToYaml(senses: Sequence<Sense>): String = dumper.dump(senses.toSerializable())
+    fun sensesToYaml(senses: Sequence<Sense>): String = dump(senses.toSerializable())
 
     /**
      * Synsets to YAML string
      * @param synsets sequence of synsets
      * @return YAML string
      */
-    fun synsetsToYaml(synsets: Sequence<Synset>): String = dumper.dump(synsets.toSerializable())
+    fun synsetsToYaml(synsets: Sequence<Synset>): String = dump(synsets.toSerializable())
 
     // M O D E L
 
@@ -98,7 +98,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
         whichSynsets: Sequence<Synset> = model.synsets.asSequence().sortedBy { it.synsetId },
     ): String {
         val (yLexes, ySynsets) = model.toFlatSerializableOfLexes(whichLexes = whichLexes, whichSynsets = whichSynsets)
-        return dumper.dump(yLexes.entries + ySynsets.entries)
+        return dump(yLexes.entries + ySynsets.entries)
     }
 
     /**
@@ -113,7 +113,9 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
     ): Sequence<Pair<String, String>> {
         return model.toSplitSerializable(generated = generated)
             .map { (data, filename) ->
-                dumper.dump(data) to "$filename.yaml"
+                dump(data) to "$filename.yaml"
             }
     }
+
+    fun dump(vararg objects: Any) = dumper.dump(objects)
 }
