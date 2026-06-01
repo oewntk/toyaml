@@ -3,6 +3,8 @@ package org.oewntk.yaml.out
 import org.oewntk.model.*
 import org.oewntk.yaml.out.YamlDump.Companion.blockDumperOptions
 import org.yaml.snakeyaml.DumperOptions
+import kotlin.sequences.map
+import kotlin.sequences.toList
 
 class ToYaml(options: DumperOptions = blockDumperOptions) {
 
@@ -54,18 +56,9 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * Lexes to YAML string
      *
      * @param lexes lexes sequence of lexes
-     * @param resolver senseKey to sense resolver
      * @return YAML string
      */
-    fun lexValuesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): String = dump(lexes.asValuesToSerializable(resolver))
-
-    /**
-     * Lexes to YAML string
-     *
-     * @param lexes lexes sequence of lexes
-     * @return YAML string
-     */
-    fun lexesToYaml(lexes: Sequence<Lex>): String = dump(lexes.asEntriesToSerializable())
+    fun lexesToYaml(lexes: Sequence<Lex>, resolver: (SenseKey) -> Sense?): List<String> = lexes.map { dump(it.toSerializable(resolver)) }.toList()
 
     /**
      * Senses to YAML string
@@ -73,14 +66,14 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @param senses senses sequence of senses
      * @return YAML string
      */
-    fun sensesToYaml(senses: Sequence<Sense>): String = dump(senses.toSerializable())
+    fun sensesToYaml(senses: Sequence<Sense>): List<String> = senses.map { dump(it.toSerializable()) }.toList()
 
     /**
      * Synsets to YAML string
      * @param synsets sequence of synsets
      * @return YAML string
      */
-    fun synsetsToYaml(synsets: Sequence<Synset>): String = dump(synsets.toSerializable())
+    fun synsetsToYaml(synsets: Sequence<Synset>): List<String> = synsets.map { dump(it.toSerializable()) }.toList()
 
     // M O D E L
 
