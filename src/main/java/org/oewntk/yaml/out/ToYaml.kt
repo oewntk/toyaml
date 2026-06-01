@@ -42,16 +42,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @return YAML string
      */
     fun toYaml(synset: Synset): String = dump(synset.toSerializable())
-
-    /**
-     * Entries to YAML string
-     *
-     * @param entries entries sequence of entries
-     * @param resolver senseKey to sense resolver
-     * @return YAML string
-     */
-    fun entriesToYaml(entries: Sequence<LexEntry>, resolver: (SenseKey) -> Sense?): String = dump(entries.toSerializable(resolver))
-
+    
     /**
      * Lexes to YAML string
      *

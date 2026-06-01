@@ -10,7 +10,6 @@ import org.oewntk.ser.`in`.LibTestsSerCommon.model
 import org.oewntk.ser.`in`.LibTestsSerCommon.ps
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import java.io.File
-import java.util.*
 import kotlin.test.assertEquals
 
 class TestYamlObjects {
@@ -79,30 +78,11 @@ class TestYamlObjects {
     }
 
     @Test
-    fun testEntries() {
-        val someEntries: Sequence<LexEntry> = arrayOf("force", "lead", "row", "bow", "galore")
-            .asSequence()
-            .map { AbstractMap.SimpleEntry(it, model.lexResolver(it)) }
-        val yamlString = yaml.entriesToYaml(someEntries, model.senseResolver)
-        ps.println(yamlString)
-    }
-
-    @Test
-    fun testPairEntries() {
-        val someEntries: Sequence<LexEntry> = arrayOf("force", "lead", "row", "bow", "galore")
-            .asSequence()
-            .map { it to model.lexResolver(it) }
-            .map { AbstractMap.SimpleEntry(it.first, it.second) }
-        val yamlString = yaml.entriesToYaml(someEntries, model.senseResolver)
-        ps.println(yamlString)
-    }
-
-    @Test
-    fun test100RandomEntries() {
-        val someEntries: Sequence<LexEntry> = model.lexEntries
+    fun test100RandomLexes() {
+        val someLexes: Sequence<Lex> = model.lexes.asSequence()
             .drop((1000..100000).random())
             .take(100)
-        val yamlString = yaml.entriesToYaml(someEntries, model.senseResolver)
+        val yamlString = yaml.lexesToYaml(someLexes, model.senseResolver)
         ps.println(yamlString)
     }
 
