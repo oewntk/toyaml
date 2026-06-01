@@ -16,6 +16,8 @@ class YamlDump(val options: DumperOptions = compatDumperOptions) {
             }
         }.toString()
 
+    fun dumpAsMap(map: Map<*, *>): String = yaml.dumpAsMap(map)
+
     fun dump(file: String = "-", vararg objects: Any) {
         val result = dump(*objects)
         if ("-" == file)

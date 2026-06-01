@@ -8,7 +8,11 @@ import kotlin.sequences.toList
 
 class ToYaml(options: DumperOptions = blockDumperOptions) {
 
-    val dumper = YamlDump(options)
+    private val dumper = YamlDump(options)
+
+    fun dump(vararg objects: Any) = dumper.dump(objects)
+
+    fun dumpAsMap(map: Map<*,*>) = dumper.dumpAsMap(map)
 
     /**
      * Pronunciation to YAML
@@ -42,7 +46,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @return YAML string
      */
     fun toYaml(synset: Synset): String = dump(synset.toSerializable())
-    
+
     /**
      * Lexes to YAML string
      *
@@ -100,6 +104,4 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
                 dump(data) to "$filename.yaml"
             }
     }
-
-    fun dump(vararg objects: Any) = dumper.dump(objects)
 }
