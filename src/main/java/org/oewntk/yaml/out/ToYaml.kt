@@ -85,7 +85,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
         whichLexes: Sequence<Lex> = model.lexes.asSequence().sortedWith(compareBy(Lex::lemma).thenBy(Lex::key2)),
         whichSynsets: Sequence<Synset> = model.synsets.asSequence().sortedBy { it.synsetId },
     ): String {
-        val (yLexes, ySynsets) = model.asData(whichLexes = whichLexes, whichSynsets = whichSynsets)
+        val (yLexes, ySynsets) = model.dataSerialize(whichLexes = whichLexes, whichSynsets = whichSynsets)
         return dump(yLexes.entries + ySynsets.entries)
     }
 
