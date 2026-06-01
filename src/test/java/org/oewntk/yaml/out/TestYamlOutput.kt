@@ -5,6 +5,7 @@ package org.oewntk.yaml.out
 
 import org.junit.BeforeClass
 import org.junit.Test
+import org.oewntk.ser.`in`.LibTestsSerCommon.ps
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 
 class TestYamlOutput {
@@ -67,14 +68,14 @@ class TestYamlOutput {
     @Test
     fun testMap() {
         val yamlString = yaml.dump(genTestMap())
-        println(yamlString)
+        ps.println(yamlString)
     }
 
     @Test
     fun testMapVisit() {
         val m = visitMap(genTestMap())
         val yamlString = yaml.dump(m)
-        println(yamlString)
+        ps.println(yamlString)
     }
 
     private fun genSenses(i: Int, j: Int, n: Int = 3) = Array(n) {
@@ -105,7 +106,7 @@ class TestYamlOutput {
     fun testOEWN() {
         val m = genEntries()
         val yamlString = yaml.dump(m)
-        println(yamlString)
+        ps.println(yamlString)
     }
 
     companion object {
