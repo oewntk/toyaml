@@ -80,12 +80,12 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @receiver core model
      * @return YAML string
      */
-    fun toFlatYaml(
+    fun toRawYaml(
         model: CoreModel,
         whichLexes: Sequence<Lex> = model.lexes.asSequence().sortedWith(compareBy(Lex::lemma).thenBy(Lex::key2)),
         whichSynsets: Sequence<Synset> = model.synsets.asSequence().sortedBy { it.synsetId },
     ): String {
-        val (yLexes, ySynsets) = model.toFlatSerializableOfLexes(whichLexes = whichLexes, whichSynsets = whichSynsets)
+        val (yLexes, ySynsets) = model.asData(whichLexes = whichLexes, whichSynsets = whichSynsets)
         return dump(yLexes.entries + ySynsets.entries)
     }
 
@@ -95,7 +95,7 @@ class ToYaml(options: DumperOptions = blockDumperOptions) {
      * @receiver core model
      * @yield YAML string to file
      */
-    fun toSplitYaml(
+    fun toSplitSerializedYaml(
         model: CoreModel,
         generated: Boolean = false
     ): Sequence<Pair<String, String>> {

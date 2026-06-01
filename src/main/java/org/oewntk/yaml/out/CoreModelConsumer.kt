@@ -27,14 +27,14 @@ class CoreModelConsumer(
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         if (split) {
-            yaml.toSplitYaml(model, generated = generated).forEach { (content, file) ->
+            yaml.toSplitSerializedYaml(model, generated = generated).forEach { (content, file) ->
                 Tracing.psInfo.printf("[File] %s%n", file)
                 File(dir, file).writeText(content)
             }
         } else {
             val file = File(dir, "oewn.yaml")
 
-            val content = yaml.toFlatYaml(model)
+            val content = yaml.toRawYaml(model)
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(content)
         }
