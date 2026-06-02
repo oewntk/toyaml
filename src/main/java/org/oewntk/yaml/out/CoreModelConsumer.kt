@@ -4,8 +4,8 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.CoreModel
-import org.oewntk.model.toOneSerializable
-import org.oewntk.model.toSplitSerializable
+import org.oewntk.model.toOneOEWNData
+import org.oewntk.model.toSplitOEWNData
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
 import java.io.File
@@ -29,14 +29,14 @@ class CoreModelConsumer(
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         if (split) {
-            model.toSplitSerializable(generated = generated).forEach { (serializable, file) ->
+            model.toSplitOEWNData(generated = generated).forEach { (serializable, file) ->
                 Tracing.psInfo.printf("[File] %s%n", file)
                 val content = yaml.dump(serializable)
                 File(dir, file).writeText(content)
             }
         } else {
             val file = File(dir, "oewn.yaml")
-            val serializable = model.toOneSerializable()
+            val serializable = model.toOneOEWNData()
             val content = yaml.dump(serializable)
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(content)
