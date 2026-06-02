@@ -5,13 +5,8 @@ package org.oewntk.yaml.out
 
 import org.junit.BeforeClass
 import org.junit.Test
-import org.oewntk.model.CoreModel
 import org.oewntk.model.Filename
-import org.oewntk.model.LibModelSubset.lexSubset
-import org.oewntk.model.LibModelSubset.synsetSubset
 import org.oewntk.model.LibTestGen.genModelSerializables
-import org.oewntk.model.SData
-import org.oewntk.model.toSerializable
 import org.oewntk.ser.`in`.LibTestsSerCommon.checkOrig
 import org.oewntk.ser.`in`.LibTestsSerCommon.model
 import org.oewntk.ser.`in`.LibTestsSerCommon.ps
@@ -23,9 +18,9 @@ class TestYamlModelSerialize {
 
     @Test
     fun testModelSerialization() {
-        val serialized: Sequence<Pair<SData, Filename>> = genModelSerializables(model)
-        serialized.forEach { (sdata: SData, _: Filename) ->
-            val yamlString = yaml.dumpAsMap(sdata)
+        val serialized: Sequence<Pair<Map<String, Any>, Filename>> = genModelSerializables(model)
+        serialized.forEach { (data: Map<String, Any>, _: Filename) ->
+            val yamlString = yaml.dumpAsMap(data)
             ps.println(yamlString)
         }
     }
