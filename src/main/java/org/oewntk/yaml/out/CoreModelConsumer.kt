@@ -22,7 +22,7 @@ class CoreModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
     val generated: Boolean = false,
-    val dumperOptions: DumperOptions = compatDumperOptions
+    dumperOptions: DumperOptions = compatDumperOptions
 ) : Consumer<CoreModel> {
 
     private val yaml = YamlDump(dumperOptions)
