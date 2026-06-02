@@ -9,9 +9,9 @@ import org.oewntk.ser.`in`.LibTestsSerCommon.checkOrig
 import org.oewntk.ser.`in`.LibTestsSerCommon.model
 import org.oewntk.ser.`in`.LibTestsSerCommon.ps
 import org.oewntk.model.LibModelSubset.subset
-import org.oewntk.model.lexesDataSerialize
-import org.oewntk.model.sensesDataSerialize
-import org.oewntk.model.synsetsDataSerialize
+import org.oewntk.model.toLexesData
+import org.oewntk.model.toSensesData
+import org.oewntk.model.toSynsetsData
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 
 class TestYamlModelDataSerialize {
@@ -21,9 +21,9 @@ class TestYamlModelDataSerialize {
     @Test
     fun testModelSerialization() {
         val (someLexes, someSynsets, someSenses) = model.subset()
-        val dataLexes =  someLexes.lexesDataSerialize()
-        val dataSynsets = someSynsets.synsetsDataSerialize()
-        val dataSenses =  someSenses.sensesDataSerialize()
+        val dataLexes =  someLexes.toLexesData()
+        val dataSynsets = someSynsets.toSynsetsData()
+        val dataSenses =  someSenses.toSensesData()
         val yamlString = yaml.dump(dataLexes, dataSynsets, dataSenses)
         ps.println(yamlString)
     }

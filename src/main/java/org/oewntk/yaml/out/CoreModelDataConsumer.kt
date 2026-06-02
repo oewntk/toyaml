@@ -4,7 +4,7 @@
 package org.oewntk.yaml.out
 
 import org.oewntk.model.CoreModel
-import org.oewntk.model.dataSerialize
+import org.oewntk.model.toData
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import org.yaml.snakeyaml.DumperOptions
 import java.io.File
@@ -27,7 +27,7 @@ class CoreModelDataConsumer(
     private val yaml = YamlDump(dumperOptions)
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
-        val (dataLexes, dataSynsets, dataSenses) = model.dataSerialize()
+        val (dataLexes, dataSynsets, dataSenses) = model.toData()
         val lexContent = yaml.dump(dataLexes)
         val synsetContent = yaml.dump(dataSynsets)
         val senseContent = yaml.dump(dataSenses)
