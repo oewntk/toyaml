@@ -17,7 +17,7 @@ import java.util.function.Consumer
  * @property outDir output dir
  * @author Bernard Bou
  */
-class CoreModelRawConsumer(
+class CoreModelDataConsumer(
     private val outDir: File,
     val split: Boolean = true,
     val generated: Boolean = false,
@@ -27,11 +27,28 @@ class CoreModelRawConsumer(
     private val yaml = YamlDump(dumperOptions)
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
-        val file = File(dir, "oewn.yaml")
         val (dataLexes, dataSynsets, dataSenses) = model.dataSerialize()
-        val content = yaml.dump(dataLexes, dataSynsets, dataSenses)
-        Tracing.psInfo.printf("[File] %s%n", file)
-        file.writeText(content)
+        val lexContent = yaml.dump(dataLexes)
+        val synsetContent = yaml.dump(dataSynsets)
+        val senseContent = yaml.dump(dataSenses)
+
+        if (split) {
+            var file = File(dir, "oewn-synsets.yaml")
+            Tracing.psInfo.printf("[File] %s%n", file)
+            file.writeText(lexContent + synsetContent + senseContent)
+
+            file = File(dir, "oewn-lexes.yaml")
+            Tracing.psInfo.printf("[File] %s%n", file)
+            file.writeText(lexContent + synsetContent + senseContent)
+
+            file = File(dir, "oewn-senses.yaml")
+            Tracing.psInfo.printf("[File] %s%n", file)
+            file.writeText(lexContent + synsetContent + senseContent)
+        } else {
+            val file = File(dir, "oewn.yaml")
+            Tracing.psInfo.printf("[File] %s%n", file)
+            file.writeText(lexContent + "\n\n" + synsetContent + "\n\n" + senseContent)
+        }
     }
 
     override fun accept(model: CoreModel) {
