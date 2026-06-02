@@ -5,26 +5,27 @@ package org.oewntk.yaml.out
 
 import org.junit.BeforeClass
 import org.junit.Test
-import org.oewntk.model.LibTestGen.genLexEntries
-import org.oewntk.model.LibTestGen.genSynsetEntries
+import org.oewntk.model.LibTestGen.genDummyMap
+import org.oewntk.model.LibVisit.visitMap
 import org.oewntk.ser.`in`.LibTestsSerCommon.ps
 import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 
-class TestYamlOutput {
+class TestYamlVisit {
 
     val yaml = YamlDump(options = compatDumperOptions)
 
+    val m = genDummyMap()
+    val m2 = visitMap(m)
+
     @Test
-    fun testEntries() {
-        val m = genLexEntries()
+    fun testMap() {
         val yamlString = yaml.dump(m)
         ps.println(yamlString)
     }
 
     @Test
-    fun testSynsets() {
-        val m = genSynsetEntries()
-        val yamlString = yaml.dump(m)
+    fun testVisitedMap() {
+        val yamlString = yaml.dump(m2)
         ps.println(yamlString)
     }
 
