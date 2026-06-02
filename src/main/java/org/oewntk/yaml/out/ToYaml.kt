@@ -6,7 +6,7 @@ import org.yaml.snakeyaml.DumperOptions
 import kotlin.sequences.map
 import kotlin.sequences.toList
 
-class ToYaml(options: DumperOptions = blockDumperOptions) {
+class _ToYaml(options: DumperOptions = blockDumperOptions) {
 
     private val dumper = YamlDump(options)
 
