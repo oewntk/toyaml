@@ -1,8 +1,9 @@
 /target/
 /build/
 
-/json/
-/json311/
+/json*/
+/json*
+
 **/_*/
 **/_*
 **/oewn*
