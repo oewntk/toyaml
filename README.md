@@ -19,4 +19,4 @@ Project [toyaml](https://github.com/oewntk/toyaml)
 
 		<groupId>io.github.oewntk</groupId>
 		<artifactId>toyaml</artifactId>
-		<version>2.4.0</version>
+		<version>3.0.1</version>
