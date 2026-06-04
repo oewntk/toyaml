@@ -6,7 +6,8 @@
 
 **/_*/
 **/_*
-**/oewn*
+**/oewn.ser
+**/oewn.info
 **/build
 
 /dependency-reduced-pom.xml
