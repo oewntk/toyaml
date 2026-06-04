@@ -18,7 +18,6 @@ class ModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
     val fileext: String = "yaml",
-    val generated: Boolean = false,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions
 ) : Consumer<Model> {
 
@@ -48,7 +47,7 @@ class ModelConsumer(
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
-        CoreModelConsumer(outDir, split = split, fileext = fileext, generated = generated).accept(model)
+        CoreModelConsumer(outDir, split = split, fileext = fileext).accept(model)
         try {
             yamlModel(model, outDir)
         } catch (e: IOException) {
