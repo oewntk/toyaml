@@ -21,7 +21,8 @@ class CoreModelConsumer(
     val split: Boolean = true,
     val fileext: String = "yaml",
     val generated: Boolean = false,
-    dumperOptions: DumperOptions = YamlDump.compatDumperOptions
+    dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
+    private val verbose: Boolean = false,
 ) : Consumer<CoreModel> {
 
     private val yaml = YamlDump(dumperOptions)

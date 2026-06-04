@@ -19,7 +19,8 @@ class ModelConsumer(
     val split: Boolean = true,
     val fileext: String = "yaml",
     val generated: Boolean = false,
-    dumperOptions: DumperOptions = YamlDump.compatDumperOptions
+    dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
+    private val verbose: Boolean = false,
 ) : Consumer<Model> {
 
     private val yaml = YamlDump(dumperOptions)
