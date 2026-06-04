@@ -1,11 +1,9 @@
-/*
- * Copyright (c) 2021-2024. Bernard Bou.
- */
-package org.oewntk.yaml.out
+package org.oewntk.yaml.out.data
 
 import org.oewntk.model.CoreModel
 import org.oewntk.model.toData
-import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
+import org.oewntk.yaml.out.Tracing
+import org.oewntk.yaml.out.YamlDump
 import org.yaml.snakeyaml.DumperOptions
 import java.io.File
 import java.io.IOException
@@ -17,11 +15,11 @@ import java.util.function.Consumer
  * @property outDir output dir
  * @author Bernard Bou
  */
-class CoreModelDataConsumer(
+class CoreModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
     val generated: Boolean = false,
-    dumperOptions: DumperOptions = compatDumperOptions
+    dumperOptions: DumperOptions = YamlDump.compatDumperOptions
 ) : Consumer<CoreModel> {
 
     private val yaml = YamlDump(dumperOptions)

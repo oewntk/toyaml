@@ -1,0 +1,50 @@
+package org.oewntk.yaml.out.oewn
+
+import org.oewntk.model.Model
+import org.oewntk.yaml.out.Tracing
+import org.oewntk.yaml.out.YamlDump
+import org.yaml.snakeyaml.DumperOptions
+import java.io.File
+import java.io.IOException
+import java.util.function.Consumer
+
+/**
+ * Main class that serializes the core model.
+ *
+ * @property outDir output dir
+ * @author Bernard Bou
+ */
+class ModelConsumer(
+    private val outDir: File,
+    val split: Boolean = true,
+    val generated: Boolean = false,
+    val dumperOptions: DumperOptions = YamlDump.compatDumperOptions
+) : Consumer<Model> {
+
+    private fun yamlModel(model: Model, dir: File) {
+        val frameMap = model.verbFrames.associate { it.id to it.frame }
+        val frameContent = YamlDump(dumperOptions).dump(frameMap)
+        val frameFile = File(dir, "frames.yaml")
+        Tracing.psInfo.printf("[File] %s%n", frameFile)
+        frameFile.writeText(frameContent)
+
+        val templateMap = model.verbTemplates.associate { it.id to it.template }
+        val templateContent = YamlDump(dumperOptions).dump(templateMap)
+        val templateFile = File(dir, "templates.yaml")
+        Tracing.psInfo.printf("[File] %s%n", templateFile)
+        templateFile.writeText(templateContent)
+    }
+
+    override fun accept(model: Model) {
+        Tracing.psInfo.println("[Model] ${model.sources.contentToString()}")
+        if (!outDir.exists()) {
+            outDir.mkdirs()
+        }
+        CoreModelConsumer(outDir, split = split, generated = generated).accept(model)
+        try {
+            yamlModel(model, outDir)
+        } catch (e: IOException) {
+            e.printStackTrace(Tracing.psErr)
+        }
+    }
+}

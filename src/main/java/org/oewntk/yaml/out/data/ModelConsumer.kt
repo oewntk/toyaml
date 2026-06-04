@@ -1,10 +1,8 @@
-/*
- * Copyright (c) 2021-2024. Bernard Bou.
- */
-package org.oewntk.yaml.out
+package org.oewntk.yaml.out.data
 
 import org.oewntk.model.Model
-import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
+import org.oewntk.yaml.out.Tracing
+import org.oewntk.yaml.out.YamlDump
 import org.yaml.snakeyaml.DumperOptions
 import java.io.File
 import java.io.IOException
@@ -20,7 +18,7 @@ class ModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
     val generated: Boolean = false,
-    val dumperOptions: DumperOptions = compatDumperOptions
+    val dumperOptions: DumperOptions = YamlDump.compatDumperOptions
 ) : Consumer<Model> {
 
     private fun yamlModel(model: Model, dir: File) {
