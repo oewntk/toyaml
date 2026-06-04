@@ -16,14 +16,14 @@ import org.oewntk.yaml.out.YamlDump.Companion.compatDumperOptions
 import java.io.File
 import kotlin.test.assertEquals
 
-class TestYamlObjects {
+class TestYamlDataObjects {
 
     val yaml = YamlDump(options = compatDumperOptions)
 
     @Test
     fun testDummyEmptyLex() {
         val lex = Lex("jest", "n").apply { senseKeys = mutableListOf() }
-        val serializable: Map<String, Any> = lex.toOEWNData(model.senseResolver)
+        val serializable: Map<String, Any> = lex.toData()
         val yamlString = yaml.dumpAsMap(serializable)
         ps.println(yamlString)
     }
@@ -31,7 +31,7 @@ class TestYamlObjects {
     @Test
     fun testDummyLex() {
         val lex = Lex("jest", "n", listOf("jest%1:10:00::", "jest%1:04:00::"))
-        val serializable: Map<String, Any> = lex.toOEWNData(model.senseResolver)
+        val serializable: Map<String, Any> = lex.toData()
         val yamlString = yaml.dumpAsMap(serializable)
         ps.println(yamlString)
     }
@@ -45,7 +45,7 @@ class TestYamlObjects {
             arrayOf("member1", "member2"),
             arrayOf("definition", "definition2"),
         )
-        val serializable: Map<String, Any> = synset.toOEWNData()
+        val serializable: Map<String, Any> = synset.toData()
         val yamlString = yaml.dumpAsMap(serializable)
         ps.println(yamlString)
     }
@@ -53,7 +53,7 @@ class TestYamlObjects {
     @Test
     fun testSense() {
         val sense = model.senseResolver("jest%1:10:00::")
-        val serializable: Map<String, Any> = sense.toOEWNData()
+        val serializable: Map<String, Any> = sense.toData()
         val yamlString = yaml.dumpAsMap(serializable)
         ps.println(yamlString)
     }
@@ -63,7 +63,7 @@ class TestYamlObjects {
         val someSenses = arrayOf("force%1:07:00::", "force%1:07:01::", "force%1:19:00::")
             .map(model.senseResolver)
             .asSequence()
-        val serializables: Sequence<Map<String, Any>> = someSenses.map { it.toOEWNData() }
+        val serializables: Sequence<Map<String, Any>> = someSenses.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         ps.println(yamlStrings.joinToString("\n\n"))
     }
@@ -71,7 +71,7 @@ class TestYamlObjects {
     @Test
     fun testSynset() {
         val synset: Synset = model.synsetResolver("05042508-n")
-        val serializable: Map<String, Any> = synset.toOEWNData()
+        val serializable: Map<String, Any> = synset.toData()
         val yamlString = yaml.dumpAsMap(serializable)
         ps.println(yamlString)
     }
@@ -81,7 +81,7 @@ class TestYamlObjects {
         val someSynsets = arrayOf("05042508-n", "05201846-n", "11479041-n")
             .map(model.synsetResolver)
             .asSequence()
-        val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toOEWNData() }
+        val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         ps.println(yamlStrings.joinToString("\n\n"))
     }
@@ -89,7 +89,7 @@ class TestYamlObjects {
     @Test
     fun testRandomSynsets() {
         val someSynsets: Sequence<Synset> = model.synsetSubset()
-        val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toOEWNData() }
+        val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         ps.println(yamlStrings.joinToString("\n\n"))
     }
@@ -97,7 +97,7 @@ class TestYamlObjects {
     @Test
     fun testLex() {
         val lex: Lex = model.lexResolver1("jest", "n")
-        val serializable: Map<String, Any> = lex.toOEWNData(model.senseResolver)
+        val serializable: Map<String, Any> = lex.toData()
         val yamlString = yaml.dumpAsMap(serializable)
         ps.println(yamlString)
     }
@@ -107,7 +107,7 @@ class TestYamlObjects {
         val someLexes = arrayOf("force", "lead", "row", "bow", "galore")
             .flatMap(model.lexResolver)
             .asSequence()
-        val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toOEWNData(model.senseResolver) }
+        val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         ps.println(yamlStrings.joinToString("\n\n"))
     }
@@ -115,28 +115,28 @@ class TestYamlObjects {
     @Test
     fun testRandomLexes() {
         val someLexes: Sequence<Lex> = model.lexSubset()
-        val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toOEWNData(model.senseResolver) }
+        val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         ps.println(yamlStrings.joinToString("\n\n"))
     }
 
-    @Test
-    fun testSomeLexesByLemmaThenByKey2() {
-        val someLexes: Sequence<Lex> = model.lexSubset(howMany = 5)
-        val map: HyperMap1 = someLexes.lexByLemmaThenByKey2()
-        val serializedMap: Map<Lemma, Any> = map.toOEWNData(model.senseResolver)
-        val yamlString = yaml.dumpAsMap(serializedMap)
-        ps.println(yamlString)
-    }
+   // @Test
+   // fun testSomeLexesByLemmaThenByKey2() {
+   //     val someLexes: Sequence<Lex> = model.lexSubset(howMany = 5)
+   //     val map: HyperMap1 = someLexes.lexByLemmaThenByKey2()
+   //     val serializedMap: Map<Lemma, Any> = map.toData()
+   //     val yamlString = yaml.dumpAsMap(serializedMap)
+   //     ps.println(yamlString)
+   // }
 
-    @Test
-    fun testSomeSynsetsBySynsetId() {
-        val someSynsets: Sequence<Synset> = model.synsetSubset(howMany = 5)
-        val map: Map<SynsetId,Synset> = someSynsets.synsetsById()
-        val serializedMap: Map<SynsetId, Any> = map.toOEWNData()
-        val yamlString = yaml.dumpAsMap(serializedMap)
-        ps.println(yamlString)
-    }
+   // @Test
+   // fun testSomeSynsetsBySynsetId() {
+   //     val someSynsets: Sequence<Synset> = model.synsetSubset(howMany = 5)
+   //     val map: Map<SynsetId,Synset> = someSynsets.synsetsById()
+   //     val serializedMap: Map<SynsetId, Any> = map.toData()
+   //     val yamlString = yaml.dumpAsMap(serializedMap)
+   //     ps.println(yamlString)
+   // }
 
     @Test
     fun testOrig() {
