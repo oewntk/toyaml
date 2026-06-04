@@ -17,22 +17,30 @@ import java.util.function.Consumer
 class ModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
+    val fileext: String = "yaml",
     val generated: Boolean = false,
-    val dumperOptions: DumperOptions = YamlDump.compatDumperOptions
+    dumperOptions: DumperOptions = YamlDump.compatDumperOptions
 ) : Consumer<Model> {
+
+    private val yaml = YamlDump(dumperOptions)
 
     private fun yamlModel(model: Model, dir: File) {
         val frameMap = model.verbFrames.associate { it.id to it.frame }
-        val frameContent = YamlDump(dumperOptions).dump(frameMap)
-        val frameFile = File(dir, "frames.yaml")
-        Tracing.psInfo.printf("[File] %s%n", frameFile)
-        frameFile.writeText(frameContent)
-
+        val frameContent = yaml.dump(frameMap)
         val templateMap = model.verbTemplates.associate { it.id to it.template }
-        val templateContent = YamlDump(dumperOptions).dump(templateMap)
-        val templateFile = File(dir, "templates.yaml")
-        Tracing.psInfo.printf("[File] %s%n", templateFile)
-        templateFile.writeText(templateContent)
+        val templateContent = yaml.dump(templateMap)
+        if (split) {
+            val frameFile = File(dir, "frames.$fileext")
+            Tracing.psInfo.printf("[File] %s%n", frameFile)
+            frameFile.writeText(frameContent)
+            val templateFile = File(dir, "templates.$fileext")
+            Tracing.psInfo.printf("[File] %s%n", templateFile)
+            templateFile.writeText(templateContent)
+        } else {
+            val frameAndTemplateFile = File(dir, "frames_templates.$fileext")
+            Tracing.psInfo.printf("[File] %s%n", frameAndTemplateFile)
+            frameAndTemplateFile.writeText(frameContent + "\n\n" + templateContent)
+        }
     }
 
     override fun accept(model: Model) {
@@ -40,7 +48,7 @@ class ModelConsumer(
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
-        CoreModelConsumer(outDir, split = split, generated = generated).accept(model)
+        CoreModelConsumer(outDir, split = split, fileext = fileext, generated = generated).accept(model)
         try {
             yamlModel(model, outDir)
         } catch (e: IOException) {

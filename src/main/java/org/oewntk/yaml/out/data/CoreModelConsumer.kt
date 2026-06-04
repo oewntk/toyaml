@@ -18,6 +18,7 @@ import java.util.function.Consumer
 class CoreModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
+    val fileext: String = "yaml",
     val generated: Boolean = false,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions
 ) : Consumer<CoreModel> {
@@ -31,19 +32,19 @@ class CoreModelConsumer(
         val senseContent = yaml.dump(dataSenses)
 
         if (split) {
-            var file = File(dir, "oewn-synsets.yaml")
+            var file = File(dir, "oewn-synsets.$fileext")
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(lexContent + synsetContent + senseContent)
 
-            file = File(dir, "oewn-lexes.yaml")
+            file = File(dir, "oewn-lexes.$fileext")
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(lexContent + synsetContent + senseContent)
 
-            file = File(dir, "oewn-senses.yaml")
+            file = File(dir, "oewn-senses.$fileext")
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(lexContent + synsetContent + senseContent)
         } else {
-            val file = File(dir, "oewn.yaml")
+            val file = File(dir, "oewn.$fileext")
             Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(lexContent + "\n\n" + synsetContent + "\n\n" + senseContent)
         }

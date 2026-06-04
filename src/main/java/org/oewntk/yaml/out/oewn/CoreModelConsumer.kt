@@ -19,6 +19,7 @@ import java.util.function.Consumer
 class CoreModelConsumer(
     private val outDir: File,
     val split: Boolean = true,
+    val fileext: String = "yaml",
     val generated: Boolean = false,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions
 ) : Consumer<CoreModel> {
@@ -30,10 +31,10 @@ class CoreModelConsumer(
             model.toSplitOEWNData(generated = generated).forEach { (serializable, file) ->
                 Tracing.psInfo.printf("[File] %s%n", file)
                 val content = yaml.dump(serializable)
-                File(dir, file).writeText(content)
+                File(dir, "file.$fileext").writeText(content)
             }
         } else {
-            val file = File(dir, "oewn.yaml")
+            val file = File(dir, "oewn.$fileext")
             val serializable = model.toOneOEWNData()
             val content = yaml.dump(serializable)
             Tracing.psInfo.printf("[File] %s%n", file)
