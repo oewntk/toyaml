@@ -32,7 +32,7 @@ class CoreModelConsumer(
             model.toSplitOEWNData(generated = generated).forEach { (serializable, file) ->
                 Tracing.psInfo.printf("[File] %s%n", file)
                 val content = yaml.dump(serializable)
-                File(dir, "file.$fileext").writeText(content)
+                File(dir, "$file.$fileext").writeText(content)
             }
         } else {
             val file = File(dir, "oewn.$fileext")
