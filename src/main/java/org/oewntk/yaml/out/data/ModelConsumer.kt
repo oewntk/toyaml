@@ -24,7 +24,7 @@ class ModelConsumer(
 
     private val yaml = YamlDump(dumperOptions)
 
-    private fun yamlModel(model: Model, dir: File) {
+    private fun yamlExtra(model: Model, dir: File) {
         val frameMap = model.verbFrames.associate { it.id to it.frame }
         val frameContent = yaml.dump(frameMap)
         val templateMap = model.verbTemplates.associate { it.id to it.template }
@@ -50,7 +50,7 @@ class ModelConsumer(
         }
         CoreModelConsumer(outDir, split = split, fileext = fileext).accept(model)
         try {
-            yamlModel(model, outDir)
+            yamlExtra(model, outDir)
         } catch (e: IOException) {
             e.printStackTrace(Tracing.psErr)
         }
