@@ -12,6 +12,7 @@ import org.oewntk.model.toData
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.yaml.out.YamlDump
 import java.io.File
+import kotlin.sequences.asSequence
 import kotlin.test.assertEquals
 
 class TestYamlDataObjects {
@@ -86,7 +87,7 @@ class TestYamlDataObjects {
 
     @Test
     fun testRandomSynsets() {
-        val someSynsets: Sequence<Synset> = LibTestsSerCommon.model.synsetSubset()
+        val someSynsets: Sequence<Synset> = LibTestsSerCommon.model.synsetSubset().asSequence()
         val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         LibTestsSerCommon.ps.println(yamlStrings.joinToString("\n\n"))
@@ -112,7 +113,7 @@ class TestYamlDataObjects {
 
     @Test
     fun testRandomLexes() {
-        val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset()
+        val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset().asSequence()
         val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         LibTestsSerCommon.ps.println(yamlStrings.joinToString("\n\n"))

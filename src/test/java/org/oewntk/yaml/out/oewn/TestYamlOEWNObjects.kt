@@ -17,6 +17,7 @@ import org.oewntk.model.toOEWNData
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.yaml.out.YamlDump
 import java.io.File
+import kotlin.sequences.asSequence
 import kotlin.test.assertEquals
 
 class TestYamlOEWNObjects {
@@ -91,7 +92,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testRandomSynsets() {
-        val someSynsets: Sequence<Synset> = LibTestsSerCommon.model.synsetSubset()
+        val someSynsets: Sequence<Synset> = LibTestsSerCommon.model.synsetSubset().asSequence()
         val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toOEWNData() }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         LibTestsSerCommon.ps.println(yamlStrings.joinToString("\n\n"))
@@ -117,7 +118,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testRandomLexes() {
-        val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset()
+        val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset().asSequence()
         val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toOEWNData(LibTestsSerCommon.model.senseResolver) }
         val yamlStrings: Sequence<String> = serializables.map { yaml.dumpAsMap(it) }
         LibTestsSerCommon.ps.println(yamlStrings.joinToString("\n\n"))
@@ -125,7 +126,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testSomeLexesByLemmaThenByKey2() {
-        val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset(howMany = 5)
+        val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset(howMany = 5).asSequence()
         val map: HyperMap1 = someLexes.lexByLemmaThenByKey2()
         val serializedMap: Map<Lemma, Any> = map.toOEWNData(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializedMap)
@@ -134,7 +135,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testSomeSynsetsBySynsetId() {
-        val someSynsets: Sequence<Synset> = LibTestsSerCommon.model.synsetSubset(howMany = 5)
+        val someSynsets: Sequence<Synset> = LibTestsSerCommon.model.synsetSubset(howMany = 5).asSequence()
         val map: Map<SynsetId, Synset> = someSynsets.synsetsById()
         val serializedMap: Map<SynsetId, Any> = map.toOEWNData()
         val yamlString = yaml.dumpAsMap(serializedMap)

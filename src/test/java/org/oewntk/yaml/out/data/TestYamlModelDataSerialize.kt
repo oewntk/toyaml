@@ -8,6 +8,7 @@ import org.oewntk.model.toSensesData
 import org.oewntk.model.toSynsetsData
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.yaml.out.YamlDump
+import kotlin.sequences.asSequence
 
 class TestYamlModelDataSerialize {
 
@@ -16,9 +17,9 @@ class TestYamlModelDataSerialize {
     @Test
     fun testModelSerialization() {
         val (someLexes, someSynsets, someSenses) = LibTestsSerCommon.model.subset()
-        val dataLexes =  someLexes.toLexesData()
-        val dataSynsets = someSynsets.toSynsetsData()
-        val dataSenses =  someSenses.toSensesData()
+        val dataLexes =  someLexes.asSequence().toLexesData()
+        val dataSynsets = someSynsets.asSequence().toSynsetsData()
+        val dataSenses =  someSenses.asSequence().toSensesData()
         val jsonLexesString = yaml.dump(dataLexes)
         val jsonSynsetsString = yaml.dump(dataSynsets)
         val jsonSensesString = yaml.dump(dataSenses)
