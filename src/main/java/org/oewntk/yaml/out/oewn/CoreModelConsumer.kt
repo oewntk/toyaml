@@ -30,7 +30,7 @@ class CoreModelConsumer(
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         if (split) {
             model.toSplitOEWNData(generated = generated).forEach { (serializable, file) ->
-                Tracing.psInfo.printf("[File] %s%n", file)
+                if (verbose) Tracing.psInfo.printf("[File] %s%n", file)
                 val content = yaml.dump(serializable)
                 File(dir, "$file.$fileext").writeText(content)
             }
@@ -38,7 +38,7 @@ class CoreModelConsumer(
             val file = File(dir, "oewn.$fileext")
             val serializable = model.toOneOEWNData().toList()
             val content = yaml.dump(serializable)
-            Tracing.psInfo.printf("[File] %s%n", file)
+            if (verbose) Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(content)
         }
     }
