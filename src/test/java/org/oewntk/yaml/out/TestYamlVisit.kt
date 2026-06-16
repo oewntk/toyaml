@@ -3,7 +3,6 @@
  */
 package org.oewntk.yaml.out
 
-import org.junit.BeforeClass
 import org.junit.Test
 import org.oewntk.model.LibTestGen.genDummyMap
 import org.oewntk.model.LibVisitTransform.visit
