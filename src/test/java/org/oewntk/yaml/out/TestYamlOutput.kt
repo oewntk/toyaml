@@ -28,11 +28,10 @@ class TestYamlOutput {
         ps.println(yamlString)
     }
 
-    companion object {
-
-        @JvmStatic
-        @BeforeClass
-        fun init() {
-        }
-    }
+    // companion object {
+    //     @JvmStatic
+    //     @BeforeClass
+    //     fun init() {
+    //     }
+    // }
 }
