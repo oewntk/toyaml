@@ -12,7 +12,6 @@ import org.oewntk.model.toData
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.yaml.out.YamlDump
 import java.io.File
-import kotlin.sequences.asSequence
 import kotlin.test.assertEquals
 
 class TestYamlDataObjects {

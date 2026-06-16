@@ -8,7 +8,6 @@ import org.oewntk.model.toSensesData
 import org.oewntk.model.toSynsetsData
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.yaml.out.YamlDump
-import kotlin.sequences.asSequence
 
 class TestYamlModelDataSerialize {
 
