@@ -31,20 +31,20 @@ class ModelConsumer(
         val templateContent = yaml.dump(templateMap)
         if (split) {
             val frameFile = File(dir, "frames.$fileext")
-            Tracing.psInfo.printf("[File] %s%n", frameFile)
+            if (verbose) Tracing.psInfo.printf("[File] %s%n", frameFile)
             frameFile.writeText(frameContent)
             val templateFile = File(dir, "templates.$fileext")
-            Tracing.psInfo.printf("[File] %s%n", templateFile)
+            if (verbose) Tracing.psInfo.printf("[File] %s%n", templateFile)
             templateFile.writeText(templateContent)
         } else {
             val frameAndTemplateFile = File(dir, "frames_templates.$fileext")
-            Tracing.psInfo.printf("[File] %s%n", frameAndTemplateFile)
+            if (verbose) Tracing.psInfo.printf("[File] %s%n", frameAndTemplateFile)
             frameAndTemplateFile.writeText(frameContent + "\n\n" + templateContent)
         }
     }
 
     override fun accept(model: Model) {
-        Tracing.psInfo.println("[Model] $model")
+        if (verbose) Tracing.psInfo.println("[Model] $model")
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
