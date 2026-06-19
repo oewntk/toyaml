@@ -2,12 +2,25 @@ package org.oewntk.yaml.out
 
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.nodes.Tag
+import org.yaml.snakeyaml.representer.Represent
+import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 import java.io.StringWriter
 
-class YamlDump(val options: DumperOptions = compatDumperOptions) {
+class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean = true) {
 
-    val yaml = Yaml(options)
+    val yaml = if (! noCast)
+        Yaml(options)
+    else
+        Yaml(object : Representer(options) {
+            init {
+                this.representers[LinkedHashSet::class.java] = Represent { data ->
+                    representSequence(Tag.SEQ, data as Iterable<*>, options.defaultFlowStyle)
+                }
+            }
+        }, options)
+
 
     fun dump(vararg objects: Any): String = StringWriter()
         .apply {

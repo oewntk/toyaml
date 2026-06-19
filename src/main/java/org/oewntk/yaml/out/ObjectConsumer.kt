@@ -14,9 +14,10 @@ import java.util.function.BiConsumer
 open class ObjectTransformer(
     val mode: SerializationMode = SerializationMode.DATA,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
+    noCast: Boolean = true,
 ) : (Any, CoreModel) -> String {
 
-    private val yaml = YamlDump(dumperOptions)
+    private val yaml = YamlDump(dumperOptions, noCast = noCast)
 
     override fun invoke(obj: Any, model: CoreModel): String {
 
@@ -29,7 +30,8 @@ open class ObjectConsumer(
     val ps: PrintStream,
     mode: SerializationMode = SerializationMode.DATA,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
-) : ObjectTransformer(mode = mode, dumperOptions = dumperOptions), BiConsumer<Any, CoreModel> {
+    noCast: Boolean = true,
+) : ObjectTransformer(mode = mode, dumperOptions = dumperOptions, noCast = noCast), BiConsumer<Any, CoreModel> {
 
     override fun accept(obj: Any, model: CoreModel) {
         val str = super.invoke(obj, model)
