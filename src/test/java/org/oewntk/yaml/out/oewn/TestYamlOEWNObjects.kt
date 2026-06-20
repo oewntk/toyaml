@@ -2,18 +2,11 @@ package org.oewntk.yaml.out.oewn
 
 import org.junit.BeforeClass
 import org.junit.Test
-import org.oewntk.model.HyperMap1
-import org.oewntk.model.Lemma
-import org.oewntk.model.Lex
+import org.oewntk.model.*
 import org.oewntk.model.Lex.Groups.lexByLemmaThenByKey2
 import org.oewntk.model.LibModelSubset.lexSubset
 import org.oewntk.model.LibModelSubset.synsetSubset
 import org.oewntk.model.MapFactory.synsetsById
-import org.oewntk.model.ModelInfo
-import org.oewntk.model.Synset
-import org.oewntk.model.SynsetId
-import org.oewntk.model.SynsetType
-import org.oewntk.model.toOEWNData
 import org.oewntk.ser.`in`.LibTestsSerCommon
 import org.oewntk.yaml.out.YamlDump
 import java.io.File

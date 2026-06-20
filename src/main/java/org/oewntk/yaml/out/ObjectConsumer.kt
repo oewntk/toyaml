@@ -15,13 +15,14 @@ open class ObjectTransformer(
     val mode: SerializationMode = SerializationMode.DATA,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
     noCast: Boolean = true,
+    val leaveRedundantRelation: Boolean = false,
 ) : (Any, CoreModel) -> String {
 
     private val yaml = YamlDump(dumperOptions, noCast = noCast)
 
     override fun invoke(obj: Any, model: CoreModel): String {
 
-        val serializable = mode.serialize(obj, model.senseResolver)
+        val serializable = mode.serialize(obj, model.senseResolver, leaveRedundantRelation = leaveRedundantRelation)
         return yaml.dump(serializable)
     }
 }
@@ -31,7 +32,8 @@ open class ObjectConsumer(
     mode: SerializationMode = SerializationMode.DATA,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
     noCast: Boolean = true,
-) : ObjectTransformer(mode = mode, dumperOptions = dumperOptions, noCast = noCast), BiConsumer<Any, CoreModel> {
+    leaveRedundantRelation: Boolean = false,
+) : ObjectTransformer(mode = mode, dumperOptions = dumperOptions, noCast = noCast, leaveRedundantRelation = leaveRedundantRelation), BiConsumer<Any, CoreModel> {
 
     override fun accept(obj: Any, model: CoreModel) {
         val str = super.invoke(obj, model)

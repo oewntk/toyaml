@@ -20,6 +20,8 @@ class ModelConsumer(
     val fileext: String = "yaml",
     val generated: Boolean = false,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
+    val leaveRedundantRelation: Boolean = false,
+
     private val verbose: Boolean = false,
 ) : Consumer<Model> {
 
@@ -44,7 +46,7 @@ class ModelConsumer(
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
-        CoreModelConsumer(outDir, split = split, fileext = fileext, generated = generated).accept(model)
+        CoreModelConsumer(outDir, split = split, fileext = fileext, generated = generated, leaveRedundantRelation = leaveRedundantRelation).accept(model)
         try {
             yamlExtra(model, outDir)
         } catch (e: IOException) {

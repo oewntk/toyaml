@@ -22,6 +22,7 @@ class CoreModelConsumer(
     val fileext: String = "yaml",
     val generated: Boolean = false,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
+    val leaveRedundantRelation: Boolean = false,
     private val verbose: Boolean = false,
 ) : Consumer<CoreModel> {
 
@@ -29,14 +30,14 @@ class CoreModelConsumer(
 
     private fun yamlCoreModel(model: CoreModel, dir: File) {
         if (split) {
-            model.toSplitOEWNData(generated = generated).forEach { (serializable, file) ->
+            model.toSplitOEWNData(generated = generated, leaveRedundantRelation = leaveRedundantRelation).forEach { (serializable, file) ->
                 if (verbose) Tracing.psInfo.printf("[File] %s%n", file)
                 val content = yaml.dump(serializable)
                 File(dir, "$file.$fileext").writeText(content)
             }
         } else {
             val file = File(dir, "oewn.$fileext")
-            val serializable = model.toOneOEWNData().toList()
+            val serializable = model.toOneOEWNData(leaveRedundantRelation = leaveRedundantRelation).toList()
             val content = yaml.dump(serializable)
             if (verbose) Tracing.psInfo.printf("[File] %s%n", file)
             file.writeText(content)
