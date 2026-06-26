@@ -40,6 +40,21 @@ class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean
     }
 
     companion object {
+
+        // Option	        Description	D                                                               Default
+        // ____________________________________________________________________________________________________
+        // defaultStyle	    Default scalar style (plain, single-quoted, double-quoted, literal, folded)	PLAIN
+        // defaultFlowStyle	Default collection style (flow, block, auto)	                            AUTO
+        // canonical	    Whether to produce canonical YAML output	                                false
+        // allowUnicode	    Whether to allow Unicode characters in output	                            true
+        // indent	        Number of spaces for indentation	                                        2
+        // width	        Preferred line width for wrapping	                                        80
+        // lineBreak	    Line break style (UNIX, WIN, MAC)	                                        UNIX
+        // splitLines	    Whether to split long lines	                                                true
+        // explicitStart	Whether to include "---" at the start	                                    false
+        // explicitEnd	    Whether to include "..." at the end	                                        false
+        // prettyFlow	    Whether to add line breaks in flow styles	                                false
+
         val defaultDumperOptions = DumperOptions()
 
         val autoDumperOptions = DumperOptions().apply {
