@@ -26,7 +26,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testDummyLex() {
-        val lex = Lex("jest", "n", listOf("jest%1:10:00::", "jest%1:04:00::"))
+        val lex = Lex("jest", "n", listOf(SenseKey("jest%1:10:00::"), SenseKey("jest%1:04:00::")))
         val serializable: Map<String, Any> = lex.toOEWNDataValue(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)
@@ -35,7 +35,7 @@ class TestYamlOEWNObjects {
     @Test
     fun testDummySynset() {
         val synset = Synset(
-            "77777777-n",
+            SynsetId("77777777-n"),
             SynsetType.N,
             "domain",
             setOf("member1", "member2"),
@@ -48,7 +48,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testSense() {
-        val sense = LibTestsSerCommon.model.senseResolver("jest%1:10:00::")
+        val sense = LibTestsSerCommon.model.senseResolver(SenseKey("jest%1:10:00::"))
         val serializable: Map<String, Any> = sense.toOEWNData()
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)
@@ -56,7 +56,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testSenses() {
-        val someSenses = arrayOf("force%1:07:00::", "force%1:07:01::", "force%1:19:00::")
+        val someSenses = arrayOf(SenseKey("force%1:07:00::"), SenseKey("force%1:07:01::"), SenseKey("force%1:19:00::"))
             .map(LibTestsSerCommon.model.senseResolver)
             .asSequence()
         val serializables: Sequence<Map<String, Any>> = someSenses.map { it.toOEWNData() }
@@ -66,7 +66,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testSynset() {
-        val synset: Synset = LibTestsSerCommon.model.synsetResolver("05042508-n")
+        val synset: Synset = LibTestsSerCommon.model.synsetResolver(SynsetId("05042508-n"))
         val serializable: Map<String, Any> = synset.toOEWNDataValue()
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)
@@ -74,7 +74,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testSynsets() {
-        val someSynsets = arrayOf("05042508-n", "05201846-n", "11479041-n")
+        val someSynsets = arrayOf(SynsetId("05042508-n"), SynsetId("05201846-n"), SynsetId("11479041-n"))
             .map(LibTestsSerCommon.model.synsetResolver)
             .asSequence()
         val serializables: Sequence<Map<String, Any>> = someSynsets.map { it.toOEWNDataValue() }
