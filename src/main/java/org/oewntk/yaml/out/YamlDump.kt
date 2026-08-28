@@ -7,16 +7,23 @@ import org.yaml.snakeyaml.representer.Represent
 import org.yaml.snakeyaml.representer.Representer
 import java.io.File
 import java.io.StringWriter
+import org.oewntk.model.*
 
 class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean = true) {
 
-    val yaml = if (! noCast)
+    val yaml = if (!noCast)
         Yaml(options)
     else
         Yaml(object : Representer(options) {
             init {
                 this.representers[LinkedHashSet::class.java] = Represent { data ->
                     representSequence(Tag.SEQ, data as Iterable<*>, options.defaultFlowStyle)
+                }
+                this.representers[SynsetId::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as SynsetId).id)
+                }
+                this.representers[SenseKey::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as SenseKey).id)
                 }
             }
         }, options)
