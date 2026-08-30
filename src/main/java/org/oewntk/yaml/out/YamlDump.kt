@@ -25,6 +25,9 @@ class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean
                 this.representers[SenseKey::class.java] = Represent { data ->
                     representScalar(Tag.STR, (data as SenseKey).id)
                 }
+                this.representers[PronunciationValue::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as PronunciationValue).ipa)
+                }
             }
         }, options)
 
