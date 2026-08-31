@@ -18,7 +18,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testDummyEmptyLex() {
-        val lex = Lex("jest", "n").apply { senseKeys = mutableListOf() }
+        val lex = Lex(Lemma("jest"), "n").apply { senseKeys = mutableListOf() }
         val serializable: Map<String, Any> = lex.toOEWNDataValue(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)
@@ -26,7 +26,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testDummyLex() {
-        val lex = Lex("jest", "n", listOf(SenseKey("jest%1:10:00::"), SenseKey("jest%1:04:00::")))
+        val lex = Lex(Lemma("jest"), "n", listOf(SenseKey("jest%1:10:00::"), SenseKey("jest%1:04:00::")))
         val serializable: Map<String, Any> = lex.toOEWNDataValue(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)
@@ -38,7 +38,7 @@ class TestYamlOEWNObjects {
             SynsetId("77777777-n"),
             SynsetType.N,
             "domain",
-            setOf("member1", "member2"),
+            setOf(Lemma("member1"), Lemma("member2")),
             listOf("definition", "definition2"),
         )
         val serializable: Map<String, Any> = synset.toOEWNDataValue()
@@ -92,7 +92,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testLex() {
-        val lex: Lex = LibTestsSerCommon.model.lexResolver1("jest", "n")
+        val lex: Lex = LibTestsSerCommon.model.lexResolver1(Lemma("jest"), "n")
         val serializable: Map<String, Any> = lex.toOEWNDataValue(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)
@@ -100,7 +100,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testLexes() {
-        val someLexes = arrayOf("force", "lead", "row", "bow", "galore")
+        val someLexes = arrayOf(Lemma("force"), Lemma("lead"), Lemma("row"), Lemma("bow"), Lemma("galore"))
             .flatMap(LibTestsSerCommon.model.lexResolver)
             .asSequence()
         val serializables: Sequence<Map<String, Any>> = someLexes.map { it.toOEWNDataValue(LibTestsSerCommon.model.senseResolver) }
@@ -120,7 +120,7 @@ class TestYamlOEWNObjects {
     fun testSomeLexesByLemmaThenByKey2() {
         val someLexes: Sequence<Lex> = LibTestsSerCommon.model.lexSubset(howMany = 5).asSequence()
         val map: HyperMap1 = someLexes.lexByLemmaThenByKey2()
-        val serializedMap: Map<Lemma, Any> = map.toOEWNData(LibTestsSerCommon.model.senseResolver)
+        val serializedMap: Map<String, Any> = map.toOEWNData(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializedMap)
         LibTestsSerCommon.ps.println(yamlString)
     }

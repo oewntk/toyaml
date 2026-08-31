@@ -19,6 +19,9 @@ class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean
                 this.representers[LinkedHashSet::class.java] = Represent { data ->
                     representSequence(Tag.SEQ, data as Iterable<*>, options.defaultFlowStyle)
                 }
+                this.representers[Lemma::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as Lemma).form)
+                }
                 this.representers[SynsetId::class.java] = Represent { data ->
                     representScalar(Tag.STR, (data as SynsetId).id)
                 }
