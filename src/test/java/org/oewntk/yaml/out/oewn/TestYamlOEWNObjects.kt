@@ -92,7 +92,7 @@ class TestYamlOEWNObjects {
 
     @Test
     fun testLex() {
-        val lex: Lex = LibTestsSerCommon.model.lexResolver1(Lemma("jest"), "n")
+        val lex: Lex = LibTestsSerCommon.model.lexResolver1(Lemma("jest"), Key2("n"))
         val serializable: Map<String, Any> = lex.toOEWNDataValue(LibTestsSerCommon.model.senseResolver)
         val yamlString = yaml.dumpAsMap(serializable)
         LibTestsSerCommon.ps.println(yamlString)

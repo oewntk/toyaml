@@ -22,6 +22,12 @@ class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean
                 this.representers[Lemma::class.java] = Represent { data ->
                     representScalar(Tag.STR, (data as Lemma).form)
                 }
+                this.representers[Key2::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as Key2).id)
+                }
+                this.representers[Discriminant::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as Discriminant).id)
+                }
                 this.representers[SynsetId::class.java] = Represent { data ->
                     representScalar(Tag.STR, (data as SynsetId).id)
                 }
