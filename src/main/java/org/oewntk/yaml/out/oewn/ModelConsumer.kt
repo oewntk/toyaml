@@ -21,7 +21,6 @@ class ModelConsumer(
     val generated: Boolean = false,
     dumperOptions: DumperOptions = YamlDump.compatDumperOptions,
     val leaveRedundantRelation: Boolean = false,
-
     private val verbose: Boolean = false,
 ) : Consumer<Model> {
 
@@ -46,11 +45,15 @@ class ModelConsumer(
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
-        CoreModelConsumer(outDir,
+        CoreModelConsumer(
+            outDir,
             split = split,
             fileext = fileext,
             generated = generated,
-            leaveRedundantRelation = leaveRedundantRelation).accept(model)
+            leaveRedundantRelation = leaveRedundantRelation,
+            verbose = verbose,
+        )
+            .accept(model)
         try {
             yamlExtra(model, outDir)
         } catch (e: IOException) {

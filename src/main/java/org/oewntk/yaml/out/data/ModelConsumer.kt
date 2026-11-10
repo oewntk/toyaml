@@ -48,7 +48,7 @@ class ModelConsumer(
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
-        CoreModelConsumer(outDir, split = split, fileext = fileext).accept(model)
+        CoreModelConsumer(outDir, split = split, fileext = fileext, verbose = verbose).accept(model)
         try {
             yamlExtra(model, outDir)
         } catch (e: IOException) {
