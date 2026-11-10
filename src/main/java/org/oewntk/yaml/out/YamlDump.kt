@@ -37,6 +37,9 @@ class YamlDump(val options: DumperOptions = compatDumperOptions, noCast: Boolean
                 this.representers[PronunciationValue::class.java] = Represent { data ->
                     representScalar(Tag.STR, (data as PronunciationValue).ipa)
                 }
+                this.representers[RelationTarget::class.java] = Represent { data ->
+                    representScalar(Tag.STR, (data as RelationTarget).id)
+                }
             }
         }, options)
 
